@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com; frame-src https://www.youtube.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サポート｜シュート改善</title>
+<link rel="canonical" href="https://hand-plus.com/handball-form-analyzer/support/">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/icon-180.png">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="site">
+    <div class="inner">
+        <a href="../../"><img class="header-icon" src="../../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+        <nav>
+            <a href="../privacy/">プライバシー</a>
+        </nav>
+    </div>
+</header>
+<main>
+    <h1>サポート</h1>
+    <p class="meta">対象アプリ: シュート改善（HandballFormAnalyzer）</p>
+
+    <p>シュート改善は、iPhone でハンドボールのシュートを撮影し、フォームを 3D で見て比べる iOS アプリです。ゴールの位置を基準に撮るので、2 台で撮ると、角度に加えて打点の高さや打った位置（ゴールからの距離）も数値で出ます。</p>
+
+    <h2>動作環境</h2>
+    <ul>
+        <li>iOS 26 以上の iPhone（ARKit を使います。LiDAR は要りません）</li>
+        <li>iPhone 1 台でも撮れます。2 台で撮るときは、2 台ともにこのアプリが要ります</li>
+    </ul>
+
+    <h2>使い方の概要</h2>
+    <ol>
+        <li>録画一覧の右上の「撮る」（カメラのアイコン）から、撮影画面を開く</li>
+        <li>2 台で撮るときは、2 台とも撮影画面の右上の接続ボタンを押し、片方の「周辺のデバイス」に出たもう 1 台を押す。もう 1 台で「承認」を押すとつながり、押した側がメイン端末になる。1 台で撮るときは、接続ボタンの画面の上で「1 台で撮る」を選ぶ</li>
+        <li>ゴールの左右の柱の、内側・手前・床の角に「+」を合わせて 1 本ずつ置く。実物のゴールに赤と白のゴールが重なる（2 台で撮るときは 2 台とも置く）</li>
+        <li>端末を縦に構えて、録画ボタンで撮る。2 台で撮るときはメイン端末の録画ボタンで 2 台とも撮り始め、止めるともう 1 台の動画がメイン端末へ送られる</li>
+        <li>録画の詳細の右上の「フォーム保存」から、シュートの瞬間のフレームを選ぶと、骨格を 3D で見て保存できる。保存したフォームは、ほかのシュートのフォームと重ねて比べられる</li>
+    </ol>
+    <p>2 台の置き方・構え方と 3D の見方は <a href="../guide/">撮り方ガイド</a> にまとめています。</p>
+
+    <h2>よくある質問</h2>
+
+    <h3>iPhone 1 台でも使えますか</h3>
+    <p>使えます。撮影画面の右上の接続ボタンを押し、上の「1 台で撮る」を選んでください。1 本の動画から推定するので、高さや距離は出ず、数値は角度だけになります。打点の高さなどを実寸で見るには、2 台で撮ってください。</p>
+
+    <h3>もう 1 台の iPhone が見つからない</h3>
+    <ul>
+        <li>もう 1 台でもこのアプリの撮影画面を開き、右上の接続ボタンを押してください</li>
+        <li>2 台とも Wi-Fi と Bluetooth をオンにしてください</li>
+        <li>設定アプリ →「シュート改善」で「ローカルネットワーク」がオンか確かめてください</li>
+    </ul>
+
+    <h3>ゴールを置けない</h3>
+    <p>「床を認識できていません」と出ている間は置けません。端末をゆっくり動かして、ゴールの手前の床を映してください。</p>
+
+    <h3>「3 m から外れています」と出る</h3>
+    <p>置いた左右の角の間隔が、ゴールの幅（3 m）と合っていません。ずれた角を左下のボタンで選び、「+」を実物の角に合わせて置き直すと直せます。</p>
+
+    <h3>録画ボタンを押せない</h3>
+    <ul>
+        <li>ゴールの左右を置き終えるまでは撮れません</li>
+        <li>端末を縦に構えてください</li>
+        <li>2 台で撮るときは、もう 1 台もゴールを置き終えて縦に構えるまで待ちます</li>
+        <li>もう 1 台の動画を送っている間（「転送中」と出ている間）は、終わるまで待ってください</li>
+    </ul>
+
+    <h3>撮影の途中でアプリを離れた</h3>
+    <p>アプリを離れている間に端末が動くと、ゴールの位置がずれることがあります。戻ったときに「赤いゴールは実物のゴールと重なっていますか？」と聞かれたら、画面で確かめてください。ずれていれば「置き直す」を選び、ゴールを置き直してください。</p>
+
+    <h3>撮った動画や 3D の画像を保存・共有したい</h3>
+    <p>動画の再生画面の共有ボタン、3D の画面の左下の共有ボタンから、写真への保存や AirDrop などで送れます。録画をまるごと（動画・撮影時のカメラの位置・保存したフォーム）送るときは、録画の詳細の下の共有ボタンを使ってください。</p>
+
+    <h3>撮ったデータはどこに保存されますか</h3>
+    <p>すべて端末の中に保存され、開発者のサーバーへ送られることはありません。2 台で撮った場合、もう 1 台の動画はメイン端末へ送った後、もう 1 台からは消えます。詳しくは <a href="../privacy/">プライバシーポリシー</a> をご覧ください。</p>
+
+    <h2>不具合報告・お問い合わせ</h2>
+    <p>不具合のご報告、機能のご要望、その他お問い合わせは以下までお願いします。</p>
+    <ul>
+        <li>X (Twitter): <a href="https://x.com/handballballbal">@handballballbal</a></li>
+    </ul>
+
+    <h2>関連ページ</h2>
+    <ul>
+        <li><a href="../guide/">撮り方ガイド</a></li>
+        <li><a href="../privacy/">プライバシーポリシー</a></li>
+    </ul>
+</main>
+<footer class="site">
+    &copy; ハンドプラス
+</footer>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>

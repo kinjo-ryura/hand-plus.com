@@ -1,0 +1,12 @@
+# このリポジトリは丸ごと配信されるので、読者向けではないファイルも URL を持つ（README.md 参照）。
+# 検索に出したくないものだけを外す。CSS / JS / wasm / 画像はページの描画に要るので外さない。
+User-agent: *
+# OG 画像を焼くための元 HTML（どの深さの og-source/ も）
+Disallow: /*og-source/
+# 開発ドキュメント
+Disallow: /*.md$
+# 画像の生成スクリプトとアイコンの元データ
+Disallow: /scripts/
+Disallow: /icon-source/
+
+Sitemap: https://hand-plus.com/sitemap.xml

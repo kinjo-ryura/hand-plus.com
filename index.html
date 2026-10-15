@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>ハンドプラス</title>
+<meta name="description" content="ハンドボール関連アプリを作っています。試合を記録して、スタッツと動画で振り返る iOS アプリ「ハンド記録」を公開中。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/">
+<meta property="og:title" content="ハンドプラス — ハンドボール関連アプリ">
+<meta property="og:description" content="ハンドボール関連アプリを作っています。試合を記録して、スタッツと動画で振り返る iOS アプリ「ハンド記録」を公開中。">
+<meta property="og:image" content="https://hand-plus.com/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/">
+<link rel="icon" type="image/png" sizes="32x32" href="images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site">
+    <div class="inner">
+        <a href="./"><img class="header-icon" src="images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+    </div>
+</header>
+<main>
+    <h1>ハンドプラス</h1>
+    <p>データの力で、ハンドボールを今よりもっと楽しめる世界を目指しています。</p>
+    <!-- 本文でも .wordmark（等幅）にする。ロゴと同じ字形で見せないと「++」が 1 つの記号に見えない。 -->
+    <p>ロゴの「<span class="wordmark">h++</span>」にある「<span class="wordmark">++</span>」は、プログラミングで「1 増やす」を意味しており、ハンドボールを一歩前進させるという願いを込めています。</p>
+
+    <ul class="app-list">
+        <li>
+            <!-- アイコンも名前と同じ LP への入口にする（押せる領域を広げるため）。行き先が
+                 名前のリンクと重複するので、スクリーンリーダーとキーボードには出さない
+                 （読み上げとタブ移動が二重になる）。マウス / タッチ専用のリンク。 -->
+            <a class="app-list-icon-link" href="handball-recorder/" aria-hidden="true" tabindex="-1"><img class="app-list-icon" src="handball-recorder/images/icon-180.png" alt="" width="64" height="64"></a>
+            <div class="app-list-body">
+                <a href="handball-recorder/">ハンド記録（HandballRecorder）</a>
+                <p>試合中の記録から、試合後のサマリ・スタッツまで。</p>
+                <!-- 傘のトップから LP を経由せずインストール / デモへ行けるようにする。
+                     プロフィールの Website 欄がこのページを指しているため（親リポ #234）。 -->
+                <div class="app-list-cta">
+                    <a class="app-store" href="https://apps.apple.com/jp/app/id6762165079">App Store</a>
+                    <a class="app-store secondary" href="handball-recorder/demo/">アプリなしで試す</a>
+                </div>
+                <div class="links">
+                    <a href="handball-recorder/privacy/">プライバシーポリシー</a>
+                    <a href="handball-recorder/support/">サポート</a>
+                </div>
+            </div>
+        </li>
+        <!-- 「開発中」は状態だけを示す表記で、時期は含意しない。まだ配布物が無いので
+             名前はリンクにしない（アプリのページも無い）。プライバシーポリシーとサポートは
+             公開しているので、ハンド記録と同じ位置にリンクだけ並べる。表記を変える条件は
+             親リポのプロダクトビジョン文書にある。 -->
+        <li>
+            <img class="app-list-icon" src="images/shot-analysis-icon.png" alt="" width="64" height="64">
+            <div class="app-list-body">
+                <span class="app-list-name">シュート改善 <span class="wip">開発中</span></span>
+                <p>iPhone だけで、AR でシュートフォームを分析する。</p>
+                <div class="links">
+                    <a href="handball-form-analyzer/privacy/">プライバシーポリシー</a>
+                    <a href="handball-form-analyzer/support/">サポート</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。**その代償として `?list` のようなクエリは区別できない**
+     ので、一覧は `demo/list/` の実パスに移してある。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+/* 試合データデモ専用のスタイル。共通レイアウトは ../../style.css を継承する。
+   見た目はアプリ「ハンド記録」の記録画面（動画 + タップで飛べるタイムライン）と
+   iOS grouped list 調のカードに寄せる。 */
+
+/* iOS systemGroupedBackground 風のグレー背景（このページ限定）。 */
+/* ページ全体に効くものは `.demo-page`（デモページの body）に閉じる。**LP からもこの
+   CSS を読む**ため（LP の ③ にデモの中身をそのまま置いている）、素の body / main に
+   書くと LP の地色とレイアウトを書き換えてしまう。 */
+.demo-page {
+    background: #f2f2f7;
+}
+
+/* このページは動画から始まるので、共通 main の上パディングを詰める。 */
+.demo-page main {
+    padding-top: 12px;
+}
+
+/* ── 埋め込み動画（16:9 レスポンシブ）── */
+.demo-video-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin: 0 0 16px;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.demo-video-wrap iframe,
+.demo-video-wrap > div {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* 「見つかりません」から復帰するための配信中一覧。 */
+.match-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.match-list li {
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+}
+
+.match-list li:first-child {
+    border-top: 0;
+}
+
+.match-list .badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+/* ── 状態 / エラー ── */
+.demo-status {
+    color: var(--muted);
+    font-size: 14px;
+    padding: 24px 0;
+    text-align: center;
+}
+
+.demo-error {
+    background: #fdf0f0;
+    border: 1px solid #f0c9c9;
+    border-radius: 12px;
+    padding: 16px 20px;
+    color: #a11;
+    font-size: 14px;
+}
+
+.demo-error .detail {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* ── カード（iOS grouped list のセクション）── */
+.demo-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    margin: 0 0 16px;
+}
+
+.demo-card > h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+    line-height: 1.4;
+}
+
+/* 各セクションのラベルはカードの外（上）に置いて見た目を揃える。
+   左はカード内容（padding 16px）と揃えて iOS のセクション見出し風にする。 */
+.section-label {
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+    padding-left: 16px;
+    line-height: 1.4;
+}
+
+/* 列の意味の補足（「時刻は動画時間」など）を見出しの右端に添える。 */
+.section-label.with-note {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding-right: 16px;
+}
+
+.section-label .section-note {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+/* タイムラインは高さを制限してカード内でスクロールさせる（動画・スタッツは常に見える）。
+   position は通し再生の行追従（markPlayingRow の offsetTop 計算）が
+   このカードを基準にできるように固定する。 */
+.timeline-card {
+    position: relative;
+    max-height: 45vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* **引き込みは行が持つ**（下の .tl-goal / .tl-scene）。カードが padding を持つと
+       区切り線がカードの縁で途切れ、箱の中の箱に見える。アプリの一覧も区切りは端まで
+       伸びる。行に持たせた方が中身も広い（カード 16 + 行 4 = 20px → 16px）。 */
+    padding: 0;
+    /* 枠線。LP は地が白でカードも白なので、これが無いと一覧の輪郭が消える
+       （デモページは地が #f2f2f7 なので元から見えていた）。 */
+    border: 1px solid var(--border);
+}
+
+/* 先頭行の区切り線はカードの枠線と重なって 2px に見えるので落とす。 */
+.timeline-card .timeline > :first-child {
+    border-top: 0;
+}
+
+/* LP（最小表示）では 2/3 に詰める。あちらではデモは「触ってみる入口」で、
+   節の 1 要素として他の見出しと並ぶ。デモページはタイムラインが主役なので 45vh のまま。
+   data-view="minimal" に紐づけているのは、JS 側の isMinimal() と同じ「最小で置いている」
+   という 1 つの意図から出た結果だから（demo/README.md の契約を参照）。 */
+[data-view="minimal"] .timeline-card {
+    max-height: 30vh;
+}
+
+/* LP では動画とタイムラインを 1 枚に見せる（間を空けず、接する角だけ落とす）。
+   アプリの記録画面が動画の直下にタイムラインを置いているのと同じ形で、
+   「行を押すと上の動画が飛ぶ」という関係が並びから読める。
+   デモページは間に「すべて再生」が入るので、こちらは最小表示だけ。 */
+[data-view="minimal"] .demo-video-wrap {
+    margin-bottom: 0;
+    border-radius: 12px 12px 0 0;
+}
+
+[data-view="minimal"] .timeline-card {
+    border-radius: 0 0 12px 12px;
+}
+
+/* ── ハイライトの見出し（試合には出さない。対戦カードはスタッツ表のヘッダに出るため）──
+   動画の上に置く。何を見ているのかは映像より先に分かるべきなので。 */
+.demo-title {
+    font-size: 1.25rem;
+    margin: 0 0 2px;
+    padding-left: 16px;
+    line-height: 1.4;
+}
+
+.demo-subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 10px;
+    padding-left: 16px;
+}
+
+/* ── 得点タイムライン（両サイド + タップで動画へ）── */
+.timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.timeline .tl-phase {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 14px 0 8px;
+}
+
+.timeline .tl-goal {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    /* 左右はカードではなく行が持つ（.timeline-card のコメント参照）。 */
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+}
+
+.timeline .tl-goal.seekable {
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.timeline .tl-goal.seekable:hover {
+    background: #f6f6f8;
+}
+
+.timeline .tl-goal .ev {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.timeline .tl-goal .ev.left {
+    justify-content: flex-start;
+}
+
+.timeline .tl-goal .ev.right {
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+.timeline .tl-check {
+    flex-shrink: 0;
+    color: #007aff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.timeline .tl-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timeline .tl-time {
+    color: var(--muted);
+    font-size: 13px;
+    font-feature-settings: "tnum";
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* ── 通し再生（すべて再生）の操作バー ──
+   動画の直下に置く。ハイライトの主動線はシーンを繋いで見ることなので、一覧より上に出す。 */
+.play-all-bar {
+    display: flex;
+    justify-content: center;
+    margin: 0 0 16px;
+}
+
+.play-all {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 22px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.12s ease, background 0.12s ease;
+}
+
+.play-all:hover:not(:disabled) {
+    opacity: 0.88;
+}
+
+.play-all:disabled {
+    background: #c7c7cc;
+    cursor: default;
+}
+
+/* 再生中は「停止」に変わるので、進行中だと分かる色に振る。 */
+.play-all.playing {
+    background: var(--accent-dark);
+}
+
+/* ── ハイライトのシーン行（1 列。種別ラベル + 選手 + 動画位置）──
+   両サイド表示にしないのは、ハイライトが片チームだけを取り上げ phase も持たないため
+   （アウェイ列と試合時計の列が常に空になる）。 */
+.timeline .tl-scene {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    /* ▶ の列を足したぶん、元の 10px から詰めてある。一番厳しい行（種別が「シュートミス」で
+       時刻が 6 桁 = 100 分超）で、LP の狭いカードでも選手名が切れないようにするため。
+       実測で 10px だと余裕 4px しかなく実機のフォント差を吸収できない。8px で 10px 残る。 */
+    gap: 8px;
+    /* 左右はカードではなく行が持つ（.timeline-card のコメント参照）。 */
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    /* ヒントのピルを行に重ねるための基準。 */
+    position: relative;
+}
+
+.timeline .tl-scene.seekable {
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.timeline .tl-scene.seekable:hover {
+    background: #f6f6f8;
+}
+
+/* 通し再生で今流れているシーン。一覧のどこを見ているかを見失わせない。 */
+.timeline .tl-scene.playing {
+    background: var(--accent-soft);
+}
+
+/* 行が押せることの目印。**幅を固定する** — 押せない行は中身が空なので、固定しないと
+   その行だけカラム幅が変わって時刻の列がずれる（.tl-scene は行ごとの grid）。
+   1.6em に抑えているのは、LP のカードが 268px しかなく、ここを広げるとその幅ぶん
+   選手名が削られて「安.」のように潰れるため。 */
+.timeline .tl-play {
+    width: 1.1em;
+    text-align: right;
+    color: var(--accent);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* 最初に押せる 1 行だけのヒント。LP は説明文を持たないので、行が押せること自体を
+   ここで伝える（押すと消える）。**列を増やさず行に重ねる** — 列にすると常時その幅を
+   食い、狭いカードで選手名が潰れる。重ねるぶん、その行の時刻と ▶ は場所を空ける。 */
+.timeline .tl-scene.tl-hint .tl-time,
+.timeline .tl-scene.tl-hint .tl-play {
+    visibility: hidden;
+}
+
+.timeline .tl-tap {
+    position: absolute;
+    /* 行の引き込み（padding-left/right 16px）に合わせる。absolute は padding box 基準
+       なので、行の padding を変えたらここも合わせること。 */
+    right: 16px;
+    top: 50%;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateY(-50%);
+    animation: tl-tap-pulse 1.8s ease-in-out infinite;
+}
+
+/* translateY(-50%) は縦中央合わせなので、keyframes 側でも必ず併記する
+   （transform は上書きなので、書き落とすとピルが下にずれる）。 */
+@keyframes tl-tap-pulse {
+    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+    50% { opacity: 0.72; transform: translateY(-50%) scale(0.94); }
+}
+
+/* 動きを減らす設定では光らせない（目印としては色と文字で足りる）。 */
+@media (prefers-reduced-motion: reduce) {
+    .timeline .tl-tap {
+        animation: none;
+    }
+}
+
+/* 種別（得点 / シュートミス / メモ …）。得点だけアクセント色で拾えるようにする。 */
+.timeline .tl-kind {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #f2f2f7;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.timeline .tl-kind.goal {
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+}
+
+/* ── スタッツ表（ラベル列 + 2 チーム列）── */
+table.stat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+table.stat-table th,
+table.stat-table td {
+    padding: 7px 4px;
+}
+
+table.stat-table thead th {
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 13px;
+    text-align: left;
+}
+
+table.stat-table thead th:first-child {
+    width: 5em;
+}
+
+/* 選手別（ハイライト）は 1 列目が選手名なので、ラベル列の固定幅を効かせない。 */
+table.stat-table.by-player thead th:first-child {
+    width: auto;
+}
+
+table.stat-table.by-player tbody th {
+    color: inherit;
+    white-space: normal;
+}
+
+table.stat-table tbody th {
+    color: var(--muted);
+    font-weight: 400;
+    text-align: left;
+    white-space: nowrap;
+}
+
+table.stat-table tbody td {
+    text-align: left;
+    font-feature-settings: "tnum";
+}
+
+table.stat-table tbody tr:not(:last-child) th,
+table.stat-table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── App Store への誘導ブロック（アプリでできること訴求）── */
+.demo-pitch {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 16px;
+    margin: 24px 0 8px;
+}
+
+.demo-pitch h2 {
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+.demo-pitch ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.demo-pitch li {
+    position: relative;
+    padding: 8px 0 8px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.demo-pitch li:last-child {
+    border-bottom: none;
+}
+
+.demo-pitch li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateY(-50%);
+}
+
+.demo-pitch strong {
+    color: var(--accent-dark);
+    font-weight: 700;
+}
+
+/* ── アプリ導線 ── */
+/* ボタンが 2 つ並ぶ（「アプリで開く」+ App Store。#230）ので、LP の `.cta` と同じ
+   flex + gap で組む。text-align を残すのは、片方が hidden のとき 1 つを中央に置くため。
+   主従は塗り分けで示す — App Store が主（塗り）、アプリで開くが従（`secondary` の
+   アウトライン）。**未導入の読者のほうが多い前提**で、押しても何も起きないほうを
+   主にしない。 */
+.demo-cta {
+    margin: 20px 0 4px;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* `hidden` 属性を効かせる。UA の `[hidden] { display: none }` は
+   `a.app-store { display: inline-block }`（作者スタイル）に負けるので、
+   ここで明示的に勝たせる（0-2-1 > 0-1-1）。**消すと隠したはずのボタンが出る。** */
+.demo-cta a[hidden] {
+    display: none;
+}
+
+/* 「アプリで開く」を押してもアプリへ移らなかったときだけ出す注記（#257）。
+   既定は hidden で、demo.js が押下から 1.2 秒後に画面が離れていなければ外す。
+   **`[hidden]` を効かせる指定を消さないこと** — `.demo-cta a[hidden]` と同じ理由で、
+   作者スタイルが UA の `[hidden] { display: none }` に勝ってしまう。 */
+.demo-cta-note {
+    margin: 10px auto 0;
+    max-width: 34em;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+    text-align: center;
+}
+
+.demo-cta-note[hidden] {
+    display: none;
+}

@@ -1,0 +1,34 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["8X2335J5MG.com.first.HandballRecorder"],
+        "components": [
+          {
+            "/": "*.jpg",
+            "exclude": true,
+            "comment": "画像はアプリで開かない。**components は上から順に評価され、最初に一致したものが勝つ**ので、下の試合 / ハイライトより前に置くこと。末尾スラッシュを要求する（…/match/*/）だけでは画像を外せないことを 2026-08-26 に実機で実測した — /handball-recorder/match/<slug>/og.jpg でアプリが開いた。Apple のワイルドカードは / をまたいで一致し、パターン末尾の / は要求として働かない（#231 の A-5）"
+          },
+          {
+            "/": "*.*",
+            "exclude": true,
+            "comment": "拡張子を持つパスはすべてファイルであってページではないので、種類を問わず外す（#285）。上の *.jpg は 2026-08-26 に実機で効くことを確かめた規則で、これはその一般化 — *.jpg だけだと match/<slug>/ 配下に .png / .webp / .json を 1 つ置いた瞬間に穴が開き、防御が IncomingLinkV2 の検証だけになる。claim するページのパス（match/<slug>/ ・ highlight/<slug>/ ・ demo/）に . は現れない（slug は英数字と - のみ。demo.js の SLUG_PATTERN / IncomingLinkV2.isValidSlug と同じ規則）ので、ページを誤って外すことはない。tools/generate-match-pages/tests/ が両方向（ファイルは外れる・ページは外れない）を固定している"
+          },
+          {
+            "/": "/handball-recorder/match/*/",
+            "comment": "試合ごとの静的ページ（#231）。これが正規の形で、slug ごとに OG を出し分けられる。ワイルドカードは / を特別扱いしないので match/images/foo/ のような URL も通るが、IncomingLinkV2 が 1 セグメントだけを受けて弾く（意図的な非対称）"
+          },
+          {
+            "/": "/handball-recorder/highlight/*/",
+            "comment": "ハイライトごとの静的ページ（#231）。#230 で HighlightStoreV2 に単独取得が入り遷移先が loading / notFound を出し分けるようになったので claim できる。それ以前に claim すると冷え起動で正しい URL でも「見つかりません」になった（#211 が試合側で潰した不具合）。配信 6 件はすべて動画つきで、実際に X へ貼る価値が高いのはこちら"
+          },
+          {
+            "/": "/handball-recorder/demo/",
+            "?": { "match": "?*" },
+            "comment": "旧形式（#211）。X に投稿済みの ?match=<slug> URL のために残す。クエリ無しの素のデモページはブラウザに残し、アプリ未導入の読者にそのまま体験させる"
+          }
+        ]
+      }
+    ]
+  }
+}

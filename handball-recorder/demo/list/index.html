@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>配信中の試合一覧 / ハンド記録</title>
+<meta name="description" content="デモで振り返れるハンドボールの試合とハイライトの一覧です。選ぶと得点シーンのタイムラインが開き、行を押すと動画がその瞬間から流れます。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/handball-recorder/demo/list/">
+<meta property="og:title" content="配信中の試合を選ぶ — ハンドボールの試合記録">
+<meta property="og:description" content="デモで振り返れるハンドボールの試合とハイライトの一覧です。選ぶと得点シーンのタイムラインが開き、行を押すと動画がその瞬間から流れます。">
+<meta property="og:image" content="https://hand-plus.com/handball-recorder/demo/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/handball-recorder/demo/list/">
+<link rel="icon" type="image/png" sizes="32x32" href="../../../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../../images/icon-180.png">
+<link rel="stylesheet" href="../../../style.css">
+<link rel="stylesheet" href="../demo.css">
+</head>
+<body class="demo-page">
+<header class="site">
+    <div class="inner">
+        <a href="../../../"><img class="header-icon" src="../../../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+        <nav>
+            <a href="../../">ハンド記録</a>
+        </nav>
+    </div>
+</header>
+<!-- 一覧だけを出すページ。`demo/index.html` の写しで、違いは 3 点だけ:
+     meta が一覧向け / ルート要素に data-demo-list を付ける（`?list` と同じ分岐へ入る）/
+     深さが 1 つ増えるぶん相対パスが伸びる。
+     **`?list` から独立したパスにしたのは計測のため**（#252）。Cloudflare Web Analytics は
+     query string を記録しないので、`?list` のままだと一覧の閲覧数が `demo/` に混ざる。
+     `?list` 自体は後方互換で生きている（demo.js の requestedTarget）。
+     data-demo-base は一覧が張るリンクの基準（このページから handball-recorder/ まで。#231）。 -->
+<main data-demo data-demo-list data-demo-base="../..">
+    <!-- 一覧では使わないが、demo.js が要素を必ず探すので置いておく（demo/index.html と同じ構成）。 -->
+    <div data-demo-heading></div>
+
+    <div class="demo-video-wrap" data-demo-video-wrap hidden>
+        <div data-demo-video-mount></div>
+    </div>
+
+    <div class="demo-status" data-demo-status>読み込み中…</div>
+    <div data-demo-result></div>
+
+    <section class="demo-pitch">
+        <h2>アプリでもっと便利な機能を使おう</h2>
+        <ul>
+            <li>自分やチームの試合を<strong>記録</strong>（YouTube・撮った動画どちらでも）</li>
+            <li>選手を絞った<strong>ハイライト</strong>を作って連続再生</li>
+            <li>集計した<strong>スタッツ</strong>をワンタップで<strong>共有</strong></li>
+        </ul>
+        <p class="demo-cta">
+            <!-- アプリを入れている読者向け（#230）。href と表示は demo.js が対象から決める
+                 （`data-demo-app-open`）。**一覧では対象が決まらないので出ない** — 既定の
+                 hidden がそのまま残る。押しても何も起きないボタンを見せないことが目的なので、
+                 **この hidden を外さないこと**。 -->
+            <a class="app-store secondary" data-demo-app-open hidden>アプリで開く</a>
+            <a class="app-store" href="https://apps.apple.com/jp/app/id6762165079">App Store でインストール</a>
+        </p>
+        <!-- 押してもアプリへ移らなかったときだけ demo.js が出す（#257）。X のアプリ内ブラウザは
+             カスタムスキームを渡さないが、UA では素の Safari と区別できないので
+             **経路ではなく結果で判定する**（押下から 1.2 秒で画面が離れたかを見る）。
+             **この hidden を外さないこと** — 常時出すと、正しく開ける読者にも失敗を予告する。 -->
+        <p class="demo-cta-note" data-demo-app-open-note hidden>アプリが開きませんでした。X のアプリ内ブラウザからは開けないため、ブラウザで開き直すと開けます。まだ入れていない方は上の App Store からどうぞ。</p>
+    </section>
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+        ・
+        <a href="../../">ハンド記録</a>
+        ・
+        <a href="../../privacy/">プライバシー</a>
+        ・
+        <a href="../../support/">サポート</a>
+        ・
+        <a href="../../licenses/">OSS ライセンス</a>
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<script type="module" src="../mount.js"></script>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。**その代償として `?list` のようなクエリは区別できない**
+     ので、一覧は `demo/list/` の実パスに移してある。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>

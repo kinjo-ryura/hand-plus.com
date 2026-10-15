@@ -1,0 +1,772 @@
+:root {
+    --text: #1a1a1a;
+    --muted: #6b6b6b;
+    --link: #0a66c2;
+    --border: #e5e5e5;
+    --bg: #ffffff;
+    --bg-soft: #f7f7f8;
+    --accent: #a827ba;
+    --accent-dark: #8a1f9c;
+    --accent-soft: #faf0fc;
+    --accent-mid: #ecc9f4;
+    --accent-shadow: rgba(168, 39, 186, 0.28);
+    --accent-shadow-strong: rgba(138, 31, 156, 0.34);
+    /* 傘（ハンドプラス）自身のブランド色。琥珀 #F59E0B は brand-mark.svg の書き出し色で、
+       両アプリのアイコンの五角形にも使われている「共通の色」。--accent（紫）はハンド記録
+       固有の色なので、傘の面（トップページ）には使わない — アプリが増えたとき 1 つ目の
+       アプリが特別扱いされるため（README「傘とアプリは資産を分けている」と同じ理由）。
+       値は scripts/generate-brand-icon.sh の COLOR と**意図的な二重管理**。片方を変えたら
+       もう片方も変えること。 */
+    --brand: #F59E0B;
+    --brand-shadow: rgba(245, 158, 11, 0.30);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+    counter-reset: feature;
+}
+
+header.site {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+}
+
+header.site .inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+header.site a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+/* ワードマーク。マークと並べるときは「ハンドプラス」ではなく h++ と書く
+   （カタカナ表記はマークを伴わないフッター・h1・title に残す）。
+   等幅にするのは `++` が C++ 由来の記号だから — プロポーショナルだと字間が
+   詰まって 1 つの記号に見えなくなる。 */
+.wordmark {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: 0.04em;
+}
+
+header.site nav a {
+    color: var(--muted);
+    font-weight: normal;
+    margin-left: 16px;
+    font-size: 14px;
+}
+
+h1 {
+    font-size: 1.6rem;
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+h2 {
+    font-size: 1.15rem;
+    margin: 32px 0 8px;
+    line-height: 1.4;
+}
+
+p, li {
+    margin: 8px 0;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+a {
+    color: var(--link);
+}
+
+.meta {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+footer.site {
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    padding: 24px 20px;
+}
+
+.app-list {
+    list-style: none;
+    padding: 0;
+}
+
+.app-list li {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 12px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+/* アイコンをリンクにすると <a> が flex アイテムになるので、縮まない指定はこちらへ移す
+   （.app-list-icon の flex-shrink はアイテムでなくなった img に効かない）。 */
+.app-list-icon-link {
+    display: block;
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.app-list-icon {
+    width: 64px;
+    height: 64px;
+    /* アイコン画像は Icon Composer が角丸を焼き込んで書き出すため、ここでは丸めない
+       （CSS で重ねると二重に丸まって隅が欠ける）。
+       影も box-shadow だと要素の矩形（四角）に付き、透過の角の外側に四角い影が出る。
+       drop-shadow は画像のアルファに沿うので角丸のまま影が落ちる（.app-icon と同じ）。 */
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 12px var(--brand-shadow));
+}
+
+.app-list-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.app-list-body p {
+    margin: 4px 0 0;
+}
+
+.app-list li:hover {
+    border-color: var(--brand);
+}
+
+/* 公開済みアプリの名前はリンク色にする。地の色 + 下線なしだと、下の .app-list-name
+   （リンクにできない未公開アプリ）と見分けが付かず、押せるかどうかが分からない。 */
+.app-list li a {
+    text-decoration: none;
+    color: var(--link);
+    font-weight: 700;
+}
+
+/* 未公開アプリの行はリンクにできない。上のリンク色と対にして、地の色のままにすることで
+   「押せない」を見た目で示す。 */
+.app-list-name {
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* 「開発中」は名前ではなく状態なので、小さくして地の色に落とす。 */
+.app-list-name .wip {
+    font-weight: normal;
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 1px 8px;
+    margin-left: 6px;
+    vertical-align: 1px;
+}
+
+/* カード内の導線。LP と同じ .app-store を流用し、カードに収まるよう小さくする。
+   色指定を上書きしているのは詳細度の都合 — 上の `.app-list li a`（0-1-2）が
+   `a.app-store`（0-1-1）に勝つため、そのままだとボタンの白文字が青くなる。
+   影を消すのは、傘の面にハンド記録固有の紫を落とさないため（--brand の判断と同じ）。 */
+.app-list-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.app-list li a.app-store {
+    color: #ffffff;
+    padding: 8px 18px;
+    font-size: 14px;
+    box-shadow: none;
+}
+
+/* 傘の面ではアウトラインの紫も使えない（上と同じ「傘に --accent を落とさない」判断）。
+   枠は --brand、文字は地の色に落とす。詳細度 0-2-2 で `a.app-store.secondary`（0-2-1）に勝つ。
+   padding が上より 2px 小さいのは border 2px を足して外寸を揃えるため。 */
+.app-list li a.app-store.secondary {
+    color: var(--text);
+    border-color: var(--brand);
+    padding: 6px 16px;
+}
+
+.app-list li a.app-store.secondary:hover {
+    background: transparent;
+    border-color: var(--brand);
+}
+
+.app-list li .links {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.app-list li .links a {
+    color: var(--link);
+    margin-right: 12px;
+    font-weight: normal;
+}
+
+.hero {
+    text-align: center;
+    background: linear-gradient(180deg, var(--accent-soft) 0%, var(--bg) 100%);
+    border-radius: 20px;
+    padding: 48px 24px 40px;
+    margin: 0;
+}
+
+.hero h1 {
+    font-size: 2rem;
+    margin: 0 0 12px;
+    letter-spacing: 0.01em;
+}
+
+/* ヒーローの説明はこの 1 行だけ。タグラインとリード文に分けていた頃は
+   「ハンドボール」「振り返る」が両方に出て重複していた（#241）。
+   **下余白は持たせない。** 底の余白は .hero の padding-bottom（40px）だけで作る。
+   padding が上 48・下 40 と下をやや詰めてあるのは、アイコン → 見出し → 1 行という
+   重心が上にある積み方に合わせた設計で、ここで足すとそれを打ち消す。
+   （消したリード文の 28px を一度引き継いだが、当時はその上にタグラインという行が
+   もう 1 本あった。行を減らして底だけ据え置いたので下に偏っていた。） */
+.hero .tagline {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-dark);
+    margin: 8px auto 0;
+    max-width: 520px;
+}
+
+/* 2 つの塊を inline-block にして、**折り返しをその境目（文の切れ目）だけに起こす**。
+   日本語は既定でどこでも改行できるので、素のままだと語の途中で割れる（どこで切れるかは
+   フォントによって変わるため、環境ごとに違う崩れ方をする）。
+   固定の <br> にしないのは、1 行に収まる幅でも 2 行に割ってしまうため。
+   `text-wrap: balance` も試したが、あくまでヒントで破断位置は変わらなかった。
+   実測: 後半の塊が 246px。本文幅は端末幅 - 88px なので、iPhone 375 で 41px、
+   390 で 56px の余裕がある（実機のフォント差を吸収できる幅）。430px 以上で 1 行。 */
+.hero .tagline span {
+    display: inline-block;
+}
+
+/* 層のアコーディオン。LP に来る読者は「チームで記録する人」と「見て楽しみたい人」に
+   割れ、必要な説明も入口も違う。畳んだのは、どちらが自分かを見出しだけで判断でき、
+   関係ない側を読まずに済むため（#241）。
+   中に .feature（bg-soft の角丸ボックス）を並べるので、層自体は枠だけで背景を持たない。
+   番号（.feature の counter）は層ごとに振り直す — 通しにするとファン側の唯一の項目が
+   ④ になり、層をまたいだ 1 本の手順に見える。 */
+.layer {
+    margin: 12px 0 0;
+    scroll-margin-top: 16px;
+    counter-reset: feature;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    /* 角丸の内側に summary の背景を収める。これが無いと開いたとき見出しの背景が
+       角からはみ出す。 */
+    overflow: hidden;
+    transition: border-color 0.15s ease;
+}
+
+.layer[open] {
+    border-color: var(--accent-mid);
+}
+
+/* 枠は .layer（パネル全体）が持ち、summary は背景と区切り線だけを担う。summary 側に
+   枠を置くと、開いたとき中身が枠の外に流れ出て「パネルが開いた」ように見えない。
+   既定のマーカー（三角）は消し、右端の +/− だけで開閉を示す。 */
+.layer > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    transition: background 0.15s ease;
+}
+
+/* list-style: none だけでは Safari に効かないので、こちらも要る。 */
+.layer > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* 見出しは 1 つの flex アイテムにまとめる。summary が flex なので、包まずに置くと
+   名前と補足が横に並んでしまう。 */
+.layer-name {
+    min-width: 0;
+}
+
+/* 層を選ばせる 1 行。**層より軽く出す** — 太い見出しにすると、選ばせたい層の方が
+   従に見えて主従が逆転する。 */
+.layer-prompt {
+    margin: 28px 0 10px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.layer > summary:hover {
+    background: var(--accent-soft);
+}
+
+/* 幅を固定して中央寄せするのは、+ と − で字幅が違っても見出しの右端が動かないようにするため。
+   − は U+2212（ハイフンだと + と太さ・長さが揃わない）。 */
+.layer > summary::after {
+    content: "+";
+    flex-shrink: 0;
+    width: 1.6em;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--accent);
+}
+
+.layer[open] > summary::after {
+    content: "−";
+}
+
+.layer[open] > summary {
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--accent-mid);
+}
+
+/* **padding は持たない。** 左右は子（.feature の中身）が 20px で引き込み、summary の
+   ラベルと縦を揃える。ここでも持つと二重に引き込まれてラベルとずれ、狭い画面で
+   中身の幅も削られる。
+   上下は元から持てない — 高さをアニメーションさせるので、box-sizing が border-box の
+   まま height を 0 に縮めても padding だけが残ってしまう。 */
+.layer-body {
+    padding: 0;
+    overflow: hidden;
+}
+
+.layer-body > .cta:last-child {
+    margin-bottom: 20px;
+}
+
+.app-icon {
+    display: block;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+    /* アイコン画像は Icon Composer が角丸を焼き込んで書き出すため、ここでは丸めない
+       （CSS で重ねると二重に丸まって隅が欠ける）。
+       影も box-shadow だと要素の矩形（四角）に付き、透過の角の外側に四角い影が出る。
+       drop-shadow は画像のアルファに沿うので角丸のまま影が落ちる。 */
+    filter: drop-shadow(0 12px 24px var(--accent-shadow));
+}
+
+.header-icon {
+    width: 24px;
+    height: 24px;
+    /* アイコン画像は Icon Composer が角丸を焼き込んで書き出すため、ここでは丸めない
+       （CSS で重ねると二重に丸まって隅が欠ける）。 */
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+/* スクショの並ぶ帯。**背景を持たない** — 面を重ねる（層パネル → 節 → 帯）より、
+   スクショ自身に影を付けて浮かせる方が軽い。輪郭は下の box-shadow が作る。
+   **上マージンは持たない。** 見出しとの間隔は h2 の margin-bottom が唯一の持ち主
+   （両方が持つと大きい方に潰し合って collapse し、見出しの余白を詰めても効かない）。 */
+.screens {
+    margin: 0;
+    padding: 8px 0 16px;
+}
+
+.screens-track {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0 calc(50% - min(42.5%, 166px));
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 12px;
+    position: relative;
+}
+
+.screens-track::-webkit-scrollbar {
+    display: none;
+}
+
+.screens-slide {
+    flex: 0 0 min(85%, 332px);
+    display: flex;
+    justify-content: center;
+    scroll-snap-align: center;
+}
+
+.screens-track:has(.screens-slide:only-child) {
+    justify-content: center;
+}
+
+.screens-track:has(.screens-slide:only-child) .screens-slide {
+    flex: 0 0 auto;
+}
+
+/* 帯の背景を外したので、スクショの輪郭はここで作る。中身が白基調で、白い地の上だと
+   どこからが画面か分からなくなるため。**影 + ヘアラインの 2 本立て** — 影だけだと
+   上端（ステータスバーの白）が地に溶ける。 */
+.screens-slide img {
+    max-width: 320px;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.shot {
+    position: relative;
+    max-width: 320px;
+    width: 100%;
+}
+
+.shot img {
+    display: block;
+}
+
+.screens-slide--wide {
+    flex: 0 0 min(85%, 560px);
+}
+
+.shot--wide {
+    max-width: 560px;
+}
+
+.shot--wide img {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    border-radius: 12px;
+}
+
+.shot-label {
+    position: absolute;
+    z-index: 1;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    padding: 4px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px var(--accent-shadow);
+}
+
+.shot-box {
+    position: absolute;
+    border: 5px solid var(--accent);
+    border-radius: 16px;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7), inset 0 0 0 2px rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+}
+
+.screens-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.screens-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d9b89c;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.screens-dots .dot.active {
+    background: #d96820;
+    transform: scale(1.2);
+}
+
+/* **padding を一切持たない。余白はすべて子が持つ。**
+
+   スクショの帯（.screens）は最後の子としてカードの端まで届く作りなので、親が padding
+   を持つと帯側がそれを負の margin で打ち消すことになる。対になった数字なので片方だけ
+   直すと黙ってはみ出す（実際に 28/24 → 20/16 に変えたとき左右と下に 8px はみ出した）。
+   持たなければその事故が起きない。
+
+   **上下の余白は子の padding で作る（margin ではない）。** 親に padding も border も
+   無いので、margin だと親の外へすり抜けて（margin collapsing）カード内に余白ができない。 */
+.feature {
+    margin: 24px 0;
+    counter-increment: feature;
+}
+
+/* 端まで届かせない子は自分で引き込む（下の .cta / デモも同じ 20px）。20px なのは
+   summary の padding-left と揃えて、層ラベルと見出しの左端を一直線にするため。
+   **節に新しい子を足すときは引き込みも足すこと** — 忘れると全幅になるが、
+   それは見て分かる壊れ方で、親の padding をいじって黙ってはみ出すより良い。 */
+.feature h2 {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    /* 上の余白はここで作る（親は padding を持たない）。**padding であって margin では
+       ない** — 先頭の子の上マージンは親の外へすり抜ける（上のコメント参照）。
+       これ以上詰めると 32px の番号バッジがカードの上端に張り付く。 */
+    padding-top: 12px;
+    margin: 0 20px 6px;
+}
+
+.feature h2::before {
+    content: counter(feature);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-feature-settings: "tnum";
+}
+
+.feature p {
+    color: var(--muted);
+}
+
+/* 帯以外の子（デモ・CTA）の引き込み。h2 と同じ 20px（= summary の padding-left）。 */
+.feature > .cta,
+.feature > [data-demo] {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* 帯が末尾でない節（デモの節）は、親が下の padding を持たないぶんをここで作る。
+   **margin ではなく padding**。親に下の padding も border も無いので、margin だと
+   親の外へすり抜けて（margin collapsing）カード内に余白ができない。 */
+.feature > :last-child:not(.screens) {
+    padding-bottom: 20px;
+}
+
+/* インストール手順ページ（handball-recorder/android/）。番号付きの節（.feature）を
+   層パネル（.layer）の外で使う唯一のページ。層の中の .feature は末尾のスクショ帯が
+   カードの端まで届く前提で、引き込み（20px）を子ごとに指定している。こちらは帯を
+   持たず本文（p / ol / ul）が主役なので、本文の子をまとめて引き込む。
+   **`.install-page` に閉じてある** — 素で `.feature > p` を足すと LP 側の余白設計
+   （`.feature > .cta` との詳細度の綱引き）に触れるため。 */
+.install-page .feature > p,
+.install-page .feature > ol,
+.install-page .feature > ul {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* ol は既定の padding-left が 40px あり、上の引き込みと足すと本文が 60px ずれる。
+   ul の 20px（このファイル冒頭）と揃えて数字の位置を本文の左端付近に置く。 */
+.install-page .feature > ol,
+.install-page .feature > ul {
+    padding-left: 22px;
+}
+
+/* 見出しの折り返しを「ハンド記録 / Android 版」の境目だけで起こす（LP の
+   .hero .tagline span と同じ手当て）。素のままだと iPhone 幅で「版」の 1 字だけが
+   2 行目に落ちる。 */
+.install-page .hero h1 span {
+    display: inline-block;
+}
+
+.audience {
+    margin: 32px 0;
+    padding: 28px 24px;
+    background: var(--bg-soft);
+    border-radius: 16px;
+}
+
+.audience h2 {
+    margin-top: 0;
+}
+
+.audience ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 16px 0 0;
+}
+
+.audience li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    padding-left: 20px;
+}
+
+.audience li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateY(-50%);
+}
+
+.audience li:last-child {
+    border-bottom: none;
+}
+
+.audience .hl {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.cta {
+    margin: 28px 0 8px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+a.app-store {
+    display: inline-block;
+    background: var(--accent);
+    color: #ffffff;
+    padding: 14px 32px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 16px var(--accent-shadow);
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+a.app-store:hover {
+    background: var(--accent-dark);
+    box-shadow: 0 8px 20px var(--accent-shadow-strong);
+}
+
+/* 従の導線。以前は --muted のグレー塗りだったが、`.cta` はメディアクエリを持たず
+   flex-wrap だけで畳むため、2 ボタンの実幅（262 + 194 + gap 12 = 468px）が iPhone の
+   標準幅を超えるモバイルでは必ず縦積みになる。そこでグレー塗りは「上が主・下は無効」に
+   見えていた（#241 で実測）。アウトラインにして「押せるが主ではない」を示す。
+   padding が塗りより 2px 小さいのは、border 2px を足して同じ外寸に揃えるため。 */
+a.app-store.secondary {
+    background: transparent;
+    color: var(--accent-dark);
+    border: 2px solid var(--accent-mid);
+    padding: 12px 30px;
+    box-shadow: none;
+}
+
+a.app-store.secondary:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    box-shadow: none;
+}
+
+footer.site p {
+    margin: 4px 0;
+}
+
+/* 撮り方ガイド（シュート改善の handball-form-analyzer/guide/。handball-project#464）。
+   手順のスクショを節ごとに横へめくる帯（.screens）で並べ、各スクショの下に手順の文を添える。
+   ラベルと枠と点の色は、シュート改善のアイコンの青に替える（--accent の紫はハンド記録の色なので借りない）。 */
+.guide-page {
+    --guide-accent: #1d6fa5;
+    --guide-accent-shadow: rgba(29, 111, 165, 0.30);
+}
+
+.guide-page .shot-label {
+    background: var(--guide-accent);
+    box-shadow: 0 2px 8px var(--guide-accent-shadow);
+}
+
+.guide-page .shot-box {
+    border-color: var(--guide-accent);
+}
+
+.guide-page .screens-dots .dot {
+    background: #b9d3e4;
+}
+
+.guide-page .screens-dots .dot.active {
+    background: var(--guide-accent);
+}
+
+/* 手順の文の長さがスクショごとに違うので、上で揃える（中央揃えだとスクショの高さがずれる） */
+.guide-page .screens-track {
+    align-items: flex-start;
+}
+
+.guide-slide {
+    max-width: 320px;
+    width: 100%;
+}
+
+.guide-caption {
+    margin: 12px 4px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.guide-caption .step {
+    display: inline-block;
+    min-width: 1.6em;
+    margin-right: 6px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--guide-accent);
+    color: #ffffff;
+    font-weight: 700;
+    text-align: center;
+}
+
+.guide-page details {
+    border-top: 1px solid var(--border);
+    padding: 12px 0;
+}
+
+.guide-page details:last-of-type {
+    border-bottom: 1px solid var(--border);
+}
+
+.guide-page details > summary {
+    cursor: pointer;
+    font-weight: 700;
+}

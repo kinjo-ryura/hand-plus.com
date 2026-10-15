@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<!-- title / description は検索結果の見出しと説明文、og:title / og:description は X などの
+     カードの見出しと説明文で、役割が別なので文面も別。 -->
+<title>ハンド記録｜ハンドボールの試合記録・分析アプリ</title>
+<meta name="description" content="完全無料。ハンドボールの試合を記録して、シュート成功率などのスタッツで分析できる iOS アプリ。動画もデータで振り返れます。アプリを入れなくても、実際の試合をブラウザで試せます。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/handball-recorder/">
+<meta property="og:title" content="ハンド記録 — 試合動画をデータで振り返ろう">
+<meta property="og:description" content="完全無料。ハンドボールの試合を記録して、動画をデータで振り返れる iOS アプリ。アプリを入れなくても、実際の試合をブラウザで試せます。">
+<meta property="og:image" content="https://hand-plus.com/handball-recorder/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/handball-recorder/">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../images/icon-180.png">
+<link rel="stylesheet" href="../style.css">
+<!-- ③ にデモの中身をそのまま置くので、デモのスタイルもここで読む。ページ全体に効く
+     ルールは `.demo-page`（デモページの body）に閉じてあるため、LP には影響しない。 -->
+<link rel="stylesheet" href="demo/demo.css">
+</head>
+<body>
+<header class="site">
+    <div class="inner">
+        <a href="../"><img class="header-icon" src="../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+        <nav>
+            <a href="privacy/">プライバシー</a>
+            <a href="support/">サポート</a>
+        </nav>
+    </div>
+</header>
+<main>
+    <section class="hero">
+        <img class="app-icon" src="images/icon-180.png" alt="ハンド記録 アプリアイコン" width="120" height="120">
+        <h1>ハンド記録</h1>
+        <!-- 折り返しは 2 つの塊の境目でだけ起こす（下の CSS）。日本語は既定でどこでも
+             切れるので、放っておくと「動 / 画」のように語の途中で割れる。 -->
+        <p class="tagline"><span>完全無料。</span><span>試合動画をデータで振り返ろう</span></p>
+    </section>
+
+    <!-- 層で畳む。LP に来る読者は「チームで記録する人」と「見て楽しみたい人」に割れ、
+         必要な説明も入口も違う。開閉にしたのは、どちらが自分かを見出しだけで判断でき、
+         関係ない側を読まずに済むため。**どちらも既定では閉じる** — 片方を開いておくと
+         そちらが「本文」に見えて、選ばせるという作りが崩れる。重みは並び順だけで出す
+         （コーチ・マネージャー・選手が上 = strategy.md「最初の市場」。handball-project#241）。
+         副次的に、畳まれた層のデモは読み込まれないので初期表示が軽い。
+         見出しは機能名ではなく「その層が得られること」で書く。同じ機能でも層によって
+         意味が違うため（ハイライトは、作る側には研究の道具・見る側には楽しみ方）。 -->
+    <!-- 何を基準に選ぶのかは、層の名前だけでは伝わらない。「どちらか一方」に決めさせない
+         よう「近い方」にしている（コーチでありファンでもある人がいる）。 -->
+    <p class="layer-prompt">近い方を選んでください</p>
+    <details class="layer" id="record">
+        <summary><span class="layer-name">コーチ・マネージャー・選手</span></summary>
+        <div class="layer-body">
+            <section class="feature">
+                <h2>タップだけで記録できる</h2>
+                <figure class="screens">
+                    <div class="screens-track">
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/recording-1.png" alt="動画を見ながらの記録画面（記録ボタンとイベントタイムライン）">
+                                <span class="shot-label" style="left: 49.5%; top: 81%;">↓得点をタップ</span>
+                                <span class="shot-box" style="left: 34.5%; top: 86%; width: 30%; height: 9%; border-radius: 999px;"></span>
+                            </div>
+                        </div>
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/recording-2.png" alt="得点した選手を選ぶシート">
+                                <span class="shot-label" style="left: 38.5%; top: 63.5%;">↓決めた選手を選ぶ</span>
+                                <span class="shot-box" style="left: 27%; top: 68%; width: 23%; height: 12%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screens-dots"></div>
+                </figure>
+            </section>
+
+            <section class="feature">
+                <!-- 共有は見出しで言わず 2 枚目（共有プレビュー）に任せる。 -->
+                <h2>データを自動集計できる</h2>
+                <figure class="screens">
+                    <div class="screens-track">
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/stats-summary.png" alt="試合のサマリ（スコア・チーム別のシュート成功率・前後半別）">
+                                <span class="shot-label" style="left: 50%; top: 29.5%;">シュート成功率がわかる</span>
+                                <span class="shot-box" style="left: 4%; top: 33%; width: 92%; height: 22%;"></span>
+                            </div>
+                        </div>
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/share-preview.png" alt="共有されるスタッツ画像（スコア・トップスコアラー・得点差の推移）">
+                                <span class="shot-label" style="left: 50%; top: 13.5%;">スタッツを共有できる</span>
+                                <span class="shot-box" style="left: 5.5%; top: 15%; width: 89%; height: 53%;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screens-dots"></div>
+                </figure>
+            </section>
+
+            <!-- 振り返りの説明はここでしない。スクショで語るより実物を触った方が早く、
+                 同じ画面がブラウザでそのまま動くので、手順の最後にデモへ送る。
+                 App Store のボタンを置かないのは、対応環境の上の CTA にあるため。#241 -->
+            <section class="feature">
+                <h2>動画を見返しやすい</h2>
+                <!-- デモページ（demo/）と同じ JS / CSS をそのまま動かす。**見出し
+                     （`data-demo-heading`）は置かない** — 試合名・選手名を LP に出さないため。
+                     対象はルートの data 属性で渡す（LP の URL にクエリを付けられない）。
+                     ページ内にもう 1 個（ファンの層）あるので、data-demo の中を探す形になっている。 #241 -->
+                <div data-demo data-highlight="2026-05-09-ohrid-vs-vardar" data-view="minimal">
+                    <div class="demo-video-wrap" data-demo-video-wrap hidden>
+                        <div data-demo-video-mount></div>
+                    </div>
+                    <div class="demo-status" data-demo-status>読み込み中…</div>
+                    <div data-demo-result></div>
+                </div>
+                <p class="cta">
+                    <a class="app-store secondary" href="demo/list/">他の試合を選ぶ</a>
+                </p>
+            </section>
+        </div>
+    </details>
+
+    <details class="layer" id="watch">
+        <summary><span class="layer-name">ハンドボールファン</span></summary>
+        <div class="layer-body">
+            <section class="feature">
+                <h2>データを見ながら楽しむ</h2>
+                <figure class="screens">
+                    <div class="screens-track">
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/match-list.png" alt="インストール直後の試合一覧（公式試合とハイライト）">
+                                <span class="shot-label" style="left: 50%; top: 20%;">プロチームの試合もある</span>
+                                <span class="shot-box" style="left: 4%; top: 21.3%; width: 92%; height: 23%;"></span>
+                            </div>
+                        </div>
+                        <!-- チーム関係者の層 ② と同じスクショ・同じラベルを使う。数字が出ること
+                             自体は層によらず同じで、意味づけは見出しが担う（あちらは「自動集計
+                             できる」、こちらは「データを見ながら楽しむ」）。両方を開く人は
+                             多くないので、同じ画面が二度出る心配は小さい。 #241 -->
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/stats-summary.png" alt="試合のサマリ（スコア・チーム別のシュート成功率・前後半別）">
+                                <span class="shot-label" style="left: 50%; top: 29.5%;">シュート成功率がわかる</span>
+                                <span class="shot-box" style="left: 4%; top: 33%; width: 92%; height: 22%;"></span>
+                            </div>
+                        </div>
+                        <div class="screens-slide">
+                            <div class="shot">
+                                <img src="images/score-diff.png" alt="得点差の遷移チャート（前後半の流れ）">
+                                <span class="shot-label" style="left: 50%; top: 20.6%;">得点差で流れが見える</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screens-dots"></div>
+                </figure>
+            </section>
+
+            <!-- チーム側の手順末尾と同じくデモの実物を置く。スクショで «連続再生できる» と
+                 見せるより、その場で行を押して動画が飛ぶ方が早い。
+                 試合はチーム側（2026-05-09）と別のものにする — 両方の層を開いた人に
+                 同じ画面が二度出ると壊れて見えるため。 #241 -->
+            <section class="feature">
+                <h2>好きなシーンを見る</h2>
+                <div data-demo data-highlight="2026-04-20-ohrid-vs-vardar" data-view="minimal">
+                    <div class="demo-video-wrap" data-demo-video-wrap hidden>
+                        <div data-demo-video-mount></div>
+                    </div>
+                    <div class="demo-status" data-demo-status>読み込み中…</div>
+                    <div data-demo-result></div>
+                </div>
+            </section>
+
+            <!-- チーム側の手順末尾と同じく副ボタン 1 個だけにする。App Store は層の外の
+                 CTA にあり、層内に置くと同じページで二重になる。
+                 「アプリなしで試す」ではなく「他の試合を選ぶ」なのは、上のデモで既に試した後
+                 だから（層の外の CTA が「試す」を持つ）。#241 -->
+            <p class="cta">
+                <a class="app-store secondary" href="demo/list/">他の試合を選ぶ</a>
+            </p>
+        </div>
+    </details>
+
+    <!-- 層を開かなかった人の受け皿。層の中の CTA は畳まれていると見えない。
+         対応環境の枠の外・かつその上に置くのは、対応環境が「入れる前に確かめる条件」で
+         あって導線ではないため（条件を読む前に入口を通せる並びにする）。
+
+         **Android の入口を CTA へ出す**（handball-project#305）。
+         ADR 0003（Recorder `docs/adr/0003-delivery-unit-by-audience.md`）で、試合レポート
+         PDF とスタッツ共有カードの QR の飛び先をこのページに決めた。**App Store 直行に
+         しなかった理由がまさに「Android の利用者を行き止まりにしないため」**なので、
+         着地したページで OS の分岐が最初に見えないと選定の根拠が崩れる。しかも
+         **PDF は印刷されうる**（QR が効くのは画面の外に出たとき）ため、刷られた後に
+         直せるのは飛び先の中身だけ。以前は対応環境の箇条書き 1 行だけが入口だった。
+
+         **主ボタンにはしない。** 押した先の中身が App Store と違う — あちらは押せば
+         ストアが開いてその場で入るが、こちらは APK 直配布で、提供元不明のアプリの許可と
+         Play プロテクトの警告を通す手順が待っている。同じ塗りのボタンを 2 つ並べると
+         同じ手軽さに読める。`.secondary` の「押せるが主ではない」がこの差に合う
+         （`アプリなしで試す` と同じ見た目・同じ外寸）。
+
+         **ラベルも「インストール」にしない。** 飛び先は手順ページで、APK の取得は
+         その先にある。「サイト」は行き先を指すだけなので、押した先が説明のページでも
+         約束を破らない。
+
+         3 つ並ぶが `.cta` は flex-wrap。実測幅は 262 / 197 / 194 なので、本文幅 720px
+         では 3 つとも 1 行に収まる。モバイル（〜430px）では縦に 3 段。 -->
+    <p class="cta">
+        <a class="app-store" href="https://apps.apple.com/jp/app/id6762165079">App Store でインストール</a>
+        <a class="app-store secondary" href="android/">Android 版サイト</a>
+        <a class="app-store secondary" href="demo/">アプリなしで試す</a>
+    </p>
+
+    <section class="audience">
+        <h2>対応環境</h2>
+        <ul>
+            <li>対応デバイス: <strong class="hl">iPhone / iPad</strong></li>
+            <li>対応する動画: <strong class="hl">YouTube</strong> の試合動画と、<strong class="hl">写真アプリ</strong>に保存した動画。写真アプリの動画なら、体育館に Wi-Fi がなくても使えます</li>
+            <!-- **Android の行はここから出した**（handball-project#305。#261 で一度ここへ置いた）。
+                 対応環境は「入れる前に確かめる条件」を並べる場所で、別プラットフォームの
+                 入口として読まれる場所ではない。導線は上の CTA のボタンが持つ。
+                 層のアコーディオンにも足さない — あの 2 つは「記録する人 / 見る人」で割った
+                 読者の層で、OS は層をまたぐ軸だから、どちらに入れても片方の読者から見えなくなる。
+                 **macOS はここに残す。** 行き先のページが無く、導線ではなく本当に条件だから。
+                 上の「対応デバイス」が iPhone / iPad のままなのは、この節がこのページで
+                 説明しているアプリの条件を並べるため。Android 版の要件は同版のページが持つ。 -->
+            <li>macOS 版は、需要に応じて検討中です</li>
+        </ul>
+    </section>
+
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+        ・
+        <a href="privacy/">プライバシー</a>
+        ・
+        <a href="support/">サポート</a>
+        ・
+        <a href="licenses/">OSS ライセンス</a>
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<script src="lp.js"></script>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。**その代償として `?list` のようなクエリは区別できない**
+     ので、一覧は `demo/list/` の実パスに移してある。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>

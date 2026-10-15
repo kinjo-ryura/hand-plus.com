@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>ハンド記録 Android 版｜インストール手順</title>
+<meta name="description" content="ハンド記録の Android 版（見る専用）。APK を直接配布しています。提供元不明のアプリの許可と Play プロテクトの警告を、画面に出る文言のまま案内します。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/handball-recorder/android/">
+<meta property="og:title" content="ハンド記録 Android 版 — APK を入れて試合を見る">
+<meta property="og:description" content="ハンド記録の Android 版（見る専用）。APK を直接配布しています。提供元不明のアプリの許可と Play プロテクトの警告を、画面に出る文言のまま案内します。">
+<!-- OG は**このページ専用**（README「OG 画像の更新手順」の 1 枚 = 1 ページ）。
+     LP やデモの og.jpg を借りると、片方だけ再クロールして古いカードが残る事故に戻る。
+     中身は**アイコンと見出しの文字主体**（2026-09-01 に作り直し）。初代は実画面 2 枚
+     （サマリ / 得点差の推移）だったが、**機能紹介になっていたので外した** — カードが
+     伝えるのは「Android 版を作った」ことで、機能の列挙は投稿本文とページ本文が担当する。
+     **実画面を使うなら動画プレーヤーが写るものは避けること**（配信元のサムネイルが
+     出るため）。方針の全文は og-source/index.html の冒頭。
+     生成元: og-source/index.html → scripts/generate-og.sh -->
+<meta property="og:image" content="https://hand-plus.com/handball-recorder/android/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/handball-recorder/android/">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/icon-180.png">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<!-- 番号付きの節（.feature）を層パネルの外で使う唯一のページ。引き込みの規則を
+     このクラスに閉じてある（style.css「インストール手順ページ」）。 -->
+<body class="install-page">
+<header class="site">
+    <div class="inner">
+        <a href="../../"><img class="header-icon" src="../../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+        <nav>
+            <a href="../">ハンド記録</a>
+            <a href="../support/">サポート</a>
+        </nav>
+    </div>
+</header>
+<main>
+    <section class="hero">
+        <img class="app-icon" src="../images/icon-180.png" alt="ハンド記録 アプリアイコン" width="120" height="120">
+        <!-- 折り返しは 2 つの塊の境目でだけ起こす（下の .tagline と同じ理由。
+             素のままだと iPhone 幅で「版」の 1 字だけが 2 行目に落ちる）。 -->
+        <h1><span>ハンド記録</span> <span>Android 版</span></h1>
+        <!-- 折り返しは 2 つの塊の境目でだけ起こす（LP と同じ理由。日本語は既定で
+             どこでも切れるので、放っておくと語の途中で割れる）。
+             **文言は iOS 版の LP と同じ**にしてある（handball-recorder/index.html）。
+             同じアプリの別 OS 版なので、入口ごとに別のことを言わない。 -->
+        <p class="tagline"><span>完全無料。</span><span>試合動画をデータで振り返ろう</span></p>
+    </section>
+
+    <h2>インストール手順</h2>
+
+    <!-- ボタンは手順 ① の中に置く。押す場所と、押した直後に起きること
+         （ブラウザの確認ダイアログ）が同じ画面に並ぶ。 -->
+    <section class="feature">
+        <h2>APK をダウンロードする</h2>
+        <p class="cta">
+            <a class="app-store" href="https://github.com/kinjo-ryura/handball-recorder-android/releases/latest/download/handball-recorder-android.apk">APK をダウンロード</a>
+        </p>
+        <p>このとき、ブラウザが「この種類のファイルはお使いのデバイスに害を及ぼす可能性があります」といった確認を出すことがあります。<strong>「OK」</strong>または<strong>「保持する」</strong>を選んでダウンロードを続けてください。</p>
+    </section>
+
+    <section class="feature">
+        <h2>提供元不明のアプリを許可する</h2>
+        <p>ダウンロード完了の通知にある<strong>「開く」</strong>を押します。</p>
+        <ol>
+            <li>「セキュリティ上の理由から、この提供元の不明なアプリをインストールすることはできません」というダイアログが出ます</li>
+            <li><strong>「設定」</strong>を押すと、<strong>今 APK を開いたアプリ（Chrome やファイルアプリ）ごとの許可画面</strong>が開きます</li>
+            <li><strong>「この提供元のアプリを許可」</strong>をオンにします</li>
+            <li>戻るキーで戻ると、そのままインストールの確認に進みます</li>
+        </ol>
+    </section>
+
+    <section class="feature">
+        <h2>Play プロテクトの警告を通す</h2>
+        <p>インストールしようとすると、<strong>「不明なアプリ」「このアプリの開発者は確認されていません」</strong>といった警告が出ます。</p>
+        <ol>
+            <li><strong>「詳細」</strong>（または「詳細情報」）をタップして展開します</li>
+            <li>下に出てくる<strong>「インストールする」</strong>（または「無視してインストール」）をタップします</li>
+            <li>「アプリをスキャンしますか？」と聞かれた場合は、どちらを選んでもインストールできます</li>
+        </ol>
+        <!-- 「警告は無視するもの」を教えて終わらないよう、警告が何を意味するかだけは残す
+             （handball-project#282）。**検証手順の節はこのページから外した**（#305）——
+             恒久的な基準（署名証明書 SHA-256）と各リリースの APK ハッシュは
+             handball-recorder-android の README と Releases 本文が持つ。 -->
+        <p>この警告は Play ストアを経由していないアプリに対して出るもので、中身を調べた結果ではありません。</p>
+    </section>
+
+    <section class="audience">
+        <h2>動作要件</h2>
+        <ul>
+            <li>OS: <strong class="hl">Android 7.0 以上</strong></li>
+            <li>Google Play ストアでは配信していません（APK を直接インストールします）</li>
+        </ul>
+    </section>
+
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+        ・
+        <a href="../privacy/">プライバシー</a>
+        ・
+        <a href="../support/">サポート</a>
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。**その代償として `?list` のようなクエリは区別できない**
+     ので、一覧は `demo/list/` の実パスに移してある。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com; frame-src https://www.youtube.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>撮り方ガイド｜シュート改善</title>
+<link rel="canonical" href="https://hand-plus.com/handball-form-analyzer/guide/">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/icon-180.png">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<!-- 手順のスクショを節ごとに横へめくる帯で並べ、押す場所にラベルと枠を重ねる（ハンド記録の LP と同じ部品）。
+     ラベルと枠の位置はスクショに対する % で、画像を撮り直したら合わせ直す。スクショはシュート改善の
+     scripts/guide-screenshots.sh がシミュレータで撮る（カメラ映像とゴールの CG は写らない）。
+     スタイルは style.css「撮り方ガイド」。 -->
+<body class="guide-page">
+<header class="site">
+    <div class="inner">
+        <a href="../../"><img class="header-icon" src="../../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+        <nav>
+            <a href="../support/">サポート</a>
+            <a href="../privacy/">プライバシー</a>
+        </nav>
+    </div>
+</header>
+<main>
+    <h1>撮り方ガイド</h1>
+    <p class="meta">対象アプリ: シュート改善（HandballFormAnalyzer）</p>
+
+    <p>iPhone 2 台でシュートを撮り、シュートの瞬間のフォームを 3D で見るまでの手順です。画像を横にめくって進めてください。</p>
+
+    <h2>用意するもの</h2>
+    <ul>
+        <li>iOS 26 以上の iPhone 2 台（2 台ともこのアプリを最新にする）</li>
+        <li>ゴール</li>
+        <li>シューターと、撮る人（2 台を台や三脚に置けば 1 人でも撮れます）</li>
+    </ul>
+
+    <h2>どこから撮るか</h2>
+    <ul>
+        <li>2 台とも、ゴールの前（コート側）から撮る</li>
+        <li>精度を良くするために、シューターを<strong>別々の方向から</strong>撮る。シュートと撮影の位置は自由です。2 台をつなぐと、アプリが例を図で出します</li>
+        <li>左サイドのシュートの例: 1 台は左のサイドラインの外（9 m 線がサイドラインに当たるあたり）、もう 1 台はゴールエリアの線（6 m）の上の、左の柱の斜め前（シューターから 4 m ほど）。だいたいその場所で大丈夫です</li>
+        <li>シューターの体全体が、腕を振り上げたところまで入る距離にする</li>
+        <li>撮っている間は動かさない</li>
+    </ul>
+
+    <h2>つないで、ゴールを置く</h2>
+    <figure class="screens">
+        <div class="screens-track">
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/01-recordings-empty.png" alt="録画一覧。右上にカメラのボタン" width="640" height="1385">
+                    <span class="shot-box" style="left: 84.5%; top: 5.5%; width: 11%; height: 5.2%; border-radius: 999px;"></span>
+                    <span class="shot-label" style="left: 76%; top: 11.5%;">↑ 撮影画面を開く</span>
+                </div>
+                <p class="guide-caption"><span class="step">1</span>録画一覧の右上のカメラのボタンで、撮影画面を開きます（2 台とも）</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/02-capture-before-connecting.png" alt="撮影画面。右上に接続ボタン" width="640" height="1385" loading="lazy">
+                    <span class="shot-box" style="left: 84.5%; top: 5.5%; width: 11%; height: 5.2%; border-radius: 999px;"></span>
+                    <span class="shot-label" style="left: 76%; top: 11.5%;">↑ 2 台とも押す</span>
+                </div>
+                <p class="guide-caption"><span class="step">2</span>右上の接続ボタンを、2 台とも押します</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/03-connection-sheet.png" alt="接続の画面。周辺のデバイス" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 30.5%;">↓ もう 1 台が出たら押す</span>
+                    <span class="shot-box" style="left: 4.5%; top: 35.6%; width: 91%; height: 6.2%;"></span>
+                </div>
+                <p class="guide-caption"><span class="step">3</span>片方の「周辺のデバイス」に出たもう 1 台を押し、もう 1 台で「承認」を押すとつながります</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/04-connected-placement.png" alt="つないだ後の接続の画面。どこから撮るかの図" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 64%; top: 34.5%;">↓ 図のように 2 台で撮る</span>
+                    <span class="shot-box" style="left: 4.5%; top: 45%; width: 91%; height: 24%;"></span>
+                    <span class="shot-box" style="left: 85%; top: 8.7%; width: 11%; height: 5%; border-radius: 999px;"></span>
+                    <span class="shot-label" style="left: 80%; top: 15%;">↑ 決まったら閉じる</span>
+                </div>
+                <p class="guide-caption"><span class="step">4</span>つながると「どこから撮るか」が出ます。図のように、2 台がシューターを別々の方向から撮れる所へ移ってから、右上の ✓ で閉じます</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/05-place-first-post.png" alt="ゴールを置く画面。下にピンのボタン" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 45.5%;">↑ この + を柱の角に合わせる</span>
+                    <span class="shot-box" style="left: 41.5%; top: 80.8%; width: 17%; height: 7.8%; border-radius: 999px;"></span>
+                    <span class="shot-label" style="left: 80%; top: 83%;">← 押して置く</span>
+                </div>
+                <p class="guide-caption"><span class="step">5</span>ゴールの柱の「内側・手前・床」の角に、画面中央の「+」を合わせ、ピンのボタンで置きます。右の柱から置くときは、左下の矢印で切り替えます</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/06-place-second-post.png" alt="1 本目を置いた後の画面" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 45.5%;">↑ 反対の柱の角に合わせる</span>
+                    <span class="shot-box" style="left: 41.5%; top: 80.8%; width: 17%; height: 7.8%; border-radius: 999px;"></span>
+                    <span class="shot-label" style="left: 80%; top: 83%;">← 押して置く</span>
+                </div>
+                <p class="guide-caption"><span class="step">6</span>反対の柱の角にも「+」を合わせて置くと、撮影の画面に切り替わります（2 台とも）。「左右の間隔」が赤で出たら、左下の「配置」で戻ってずれた角を置き直します</p>
+            </div></div>
+        </div>
+        <div class="screens-dots"></div>
+    </figure>
+
+    <h2>撮る</h2>
+    <figure class="screens">
+        <div class="screens-track">
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/08-ready-to-record.png" alt="撮影の画面。下に録画ボタン" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 70%;">↓ 2 台とも押して撮る</span>
+                    <span class="shot-box" style="left: 40.5%; top: 80.3%; width: 19%; height: 8.6%; border-radius: 999px;"></span>
+                </div>
+                <p class="guide-caption"><span class="step">7</span>端末を縦に構え、2 台ともそれぞれの録画ボタンで撮り始めてから、シュートを打ちます（同時に押さなくて大丈夫です）。もう一度押すと止まります。2 台がつながっていれば、2 台が互いに動画を送り合います</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/09-transferring.png" alt="2 台が動画を送り合っている間の撮影画面" width="640" height="1385" loading="lazy">
+                    <span class="shot-box" style="left: 32%; top: 12.6%; width: 36%; height: 5.2%;"></span>
+                    <span class="shot-label" style="left: 50%; top: 19%;">↑ 送り合っている間</span>
+                </div>
+                <p class="guide-caption"><span class="step">8</span>「転送中」と出ている間も、次を撮れます。送り終えるまで撮影画面は閉じられません</p>
+            </div></div>
+        </div>
+        <div class="screens-dots"></div>
+    </figure>
+    <p>シュート 1 本ごとに止めると、送る時間が短くなり、後で瞬間を探しやすくなります。</p>
+    <p>送り終えると、2 台どちらの端末にも 2 台ぶんの録画が残ります。借りた端末で撮ったときは、要らなくなった録画を録画一覧から消してください。</p>
+
+    <h2>3D で見る</h2>
+    <figure class="screens">
+        <div class="screens-track">
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/10-recordings.png" alt="録画一覧。撮った録画が並ぶ" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 11.5%;">↓ 撮った録画を開く</span>
+                    <span class="shot-box" style="left: 4.5%; top: 16.2%; width: 91%; height: 9.6%;"></span>
+                </div>
+                <p class="guide-caption"><span class="step">9</span>録画一覧で、撮った録画を開きます（2 台どちらでも開けます）</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/11-recording-detail.png" alt="録画の詳細。右上にフォーム保存のボタン" width="640" height="1385" loading="lazy">
+                    <span class="shot-box" style="left: 84%; top: 5.5%; width: 11.5%; height: 5.2%; border-radius: 999px;"></span>
+                    <span class="shot-label" style="left: 76%; top: 11.5%;">↑ フォーム保存</span>
+                </div>
+                <p class="guide-caption"><span class="step">10</span>右上のフォーム保存のボタンを押します</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/12-frame-selection.png" alt="フレーム選択。コマ送りのボタンと、このフレームを選択" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 76.5%;">↓ コマ送りで瞬間に合わせる</span>
+                    <span class="shot-box" style="left: 31%; top: 82.2%; width: 38%; height: 5.4%;"></span>
+                    <span class="shot-box" style="left: 3.5%; top: 87.8%; width: 93%; height: 7.6%; border-radius: 999px;"></span>
+                </div>
+                <p class="guide-caption"><span class="step">11</span>動画を動かし、コマ送りのボタンで見たい瞬間に合わせて「このフレームを選択」を押します。はじめは、ボールが手から離れる瞬間がおすすめです</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/13-3d.png" alt="3D の画面。上に 2 台のフレーム、下に骨格とゴールと数値の表" width="640" height="1385" loading="lazy">
+                    <span class="shot-label" style="left: 50%; top: 49%;">指で回す・2 本指で寄る</span>
+                </div>
+                <p class="guide-caption"><span class="step">12</span>その瞬間の骨格が 3D で出ます。指でなぞると回り、2 本の指でつまむと寄ったり引いたりできます。上の 2 枚は、2 台それぞれのフレームに重ねた骨格です</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/14-viewpoint-menu.png" alt="視点のメニュー。最初の視点・横・正面・真上・キーパーの位置" width="640" height="1385" loading="lazy">
+                    <span class="shot-box" style="left: 15.5%; top: 5.8%; width: 64%; height: 27.5%;"></span>
+                    <span class="shot-label" style="left: 47.5%; top: 34.5%;">↑ 見る向きを選ぶ</span>
+                </div>
+                <p class="guide-caption"><span class="step">13</span>右上の視点のボタンで、横・正面・真上・キーパーの位置から見られます</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/16-save-form.png" alt="フォームを保存の確認。ラベルを入れて保存" width="640" height="1385" loading="lazy">
+                    <span class="shot-box" style="left: 9%; top: 21.8%; width: 82%; height: 22%;"></span>
+                    <span class="shot-label" style="left: 50%; top: 16.5%;">ラベルは入れなくてもよい</span>
+                </div>
+                <p class="guide-caption"><span class="step">14</span>右上の青いフォルダのボタンで、フォームを保存します</p>
+            </div></div>
+            <div class="screens-slide"><div class="guide-slide">
+                <div class="shot">
+                    <img src="images/17-saved-form.png" alt="保存したフォーム。右上に比べるのボタン" width="640" height="1385" loading="lazy">
+                    <span class="shot-box" style="left: 83.5%; top: 12.6%; width: 14%; height: 20.4%;"></span>
+                    <span class="shot-label" style="left: 64%; top: 34.5%;">↑ ほかのフォームと比べる</span>
+                </div>
+                <p class="guide-caption"><span class="step">15</span>保存したフォームは録画の詳細に並びます。「比べる」で、ほかのシュートのフォームと重ねて見られます</p>
+            </div></div>
+        </div>
+        <div class="screens-dots"></div>
+    </figure>
+
+    <h2>もっと詳しく</h2>
+
+    <details>
+        <summary>2 台が離れてつながらないとき</summary>
+        <p>撮っている間は、2 台がつながっていなくても撮れます。つながっていない間に撮った録画は、次に 2 台をつないだときに、撮った時間が重なるものどうしが 1 本にまとまり、2 台が互いに動画を送り合います。</p>
+    </details>
+
+    <details>
+        <summary>3D の画面の見方</summary>
+        <ul>
+            <li>骨格の色は、緑が 3D にできた関節、橙が 2 台のずれが大きい関節、灰色が 3D にできなかった関節です</li>
+            <li>右下の表に、打点の高さや肘の角度などの数値が出ます。下の右端のボタンで消せます。投げる腕は、ボールのボタンで左腕と右腕を切り替えます</li>
+            <li>シューターのほかにも 2 台に映っている人がいると「別の人に切り替え」が出ます。シューターでない人の骨格が出たら、押して切り替えます</li>
+        </ul>
+    </details>
+
+    <details>
+        <summary>うまくいかないとき</summary>
+        <ul>
+            <li><strong>「2 台が同じ人を捉えていません」</strong>: シューターが 2 台の両方の動画に映っている瞬間を選んでください</li>
+            <li><strong>「3D の精度が低い可能性があります」</strong>: フレームに重なった骨格が 2 台とも同じ人に合っているかを見てください。次に撮るときは、2 台ともゴールを置き直し、赤いゴールが実物と重なっているかを確かめてください</li>
+            <li><strong>「2 台がほぼ同じ方向から撮っているため…」</strong>: 次に撮るときは、接続の画面の「どこから撮るか」の図のように、シューターから見て別々の方向から撮ってください</li>
+            <li><strong>「2 台とも最新にしてください」</strong>: 2 台のアプリのバージョンが違います。2 台とも最新にしてください</li>
+        </ul>
+        <p>ほかに困ったときは、<a href="../support/">サポート</a> の「よくある質問」をご覧ください。</p>
+    </details>
+
+    <h2>関連ページ</h2>
+    <ul>
+        <li><a href="../support/">サポート</a></li>
+        <li><a href="../privacy/">プライバシーポリシー</a></li>
+    </ul>
+</main>
+<footer class="site">
+    &copy; ハンドプラス
+</footer>
+<script src="guide.js"></script>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>

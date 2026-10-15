@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSS ライセンス｜ハンド記録</title>
+<meta name="description" content="ハンド記録の集計コア（handball-toolkit）とこのサイトの試合データデモ（WebAssembly）に含まれるオープンソースソフトウェアのライセンス表示。">
+<link rel="canonical" href="https://hand-plus.com/handball-recorder/licenses/">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/icon-180.png">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+<header class="site">
+    <div class="inner">
+        <a href="../../"><img class="header-icon" src="../../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+        <nav>
+            <a href="../">ハンド記録</a>
+            <a href="../demo/">試合データデモ</a>
+        </nav>
+    </div>
+</header>
+<!-- 手書きのページ。一覧の写しをここに持たない — 写しは toolkit のリリースのたびに古くなる
+     （handball-project#384）。一覧の実体は handball-toolkit の THIRD_PARTY_LICENSES.md（main）で、
+     toolkit が Cargo.lock から生成し、toolkit の CI が鮮度を検査する。 -->
+<main>
+    <h1>OSS ライセンス</h1>
+    <p class="meta">対象: ハンド記録の集計コア handball-toolkit を含む配布物 — iOS アプリ／Android 版／このサイトの試合データデモ（WebAssembly）</p>
+
+    <p>ハンド記録の試合集計は、オープンソースの集計コア <a href="https://github.com/kinjo-ryura/handball-toolkit" target="_blank" rel="noopener noreferrer">handball-toolkit</a>（MIT ライセンス）で動いています。このサイトの<a href="../demo/">試合データデモ</a>と試合・ハイライトの各ページは、同じコアを WebAssembly としてブラウザに配信しています。</p>
+    <p>コアに組み込まれているオープンソースソフトウェアの一覧（ライブラリ名・バージョン・入手先）と、著作権表示を含むライセンス本文は、次のページに掲げています。各ライブラリのソースコードは一覧の「入手先」から入手できます。</p>
+    <p><a href="https://github.com/kinjo-ryura/handball-toolkit/blob/main/THIRD_PARTY_LICENSES.md" target="_blank" rel="noopener noreferrer">OSS ライセンス一覧（handball-toolkit の THIRD_PARTY_LICENSES.md）</a></p>
+    <p class="meta">この一覧は iOS／Android／Web の配布物に含まれる依存を統合したもので、Web 版（WebAssembly）には含まれないライブラリも載っています。</p>
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+        ・
+        <a href="../">ハンド記録</a>
+        ・
+        <a href="../privacy/">プライバシー</a>
+        ・
+        <a href="../support/">サポート</a>
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<!-- Cloudflare Web Analytics（#252）。生成ページと同じもの（token は秘密ではない）。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>
