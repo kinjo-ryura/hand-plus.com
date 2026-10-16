@@ -770,3 +770,123 @@ footer.site p {
     cursor: pointer;
     font-weight: 700;
 }
+
+/* ハンドボール掲示板（board/。handball-project#595）。議題の一覧と会話は board.js が GitHub から読んで描く。
+   傘の面（アプリではない）なので --accent（ハンド記録の紫）は使わず、ボタンはトップのカード内の
+   従の導線と同じく「枠 --brand・文字は地の色」にする。琥珀の塗りに白文字はコントラストが足りない。 */
+.board-lead {
+    margin-bottom: 20px;
+}
+
+.board-write {
+    margin: 20px 0 8px;
+    padding: 16px 20px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+}
+
+.board-note {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.board-cta {
+    margin: 4px 0 12px;
+}
+
+a.board-button {
+    display: inline-block;
+    padding: 10px 22px;
+    border: 2px solid var(--brand);
+    border-radius: 999px;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 700;
+    background: var(--bg);
+}
+
+a.board-button:hover {
+    box-shadow: 0 4px 12px var(--brand-shadow);
+}
+
+.board-status {
+    color: var(--muted);
+}
+
+.board-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+}
+
+.board-list li {
+    margin: 0;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.board-list li a {
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.board-meta {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.board-back {
+    font-size: 14px;
+}
+
+.board-back a {
+    text-decoration: none;
+}
+
+.board-post {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 12px 0;
+}
+
+.board-post h2 {
+    margin-top: 0;
+}
+
+/* 投稿の中身は書いた人次第なので、長い URL やコードで横にはみ出さないようにする。 */
+.board-body {
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+}
+
+.board-body pre {
+    overflow-x: auto;
+    padding: 12px;
+    background: var(--bg-soft);
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.board-body blockquote {
+    margin: 8px 0;
+    padding-left: 12px;
+    border-left: 3px solid var(--border);
+    color: var(--muted);
+}
+
+.board-replies-heading {
+    margin: 24px 0 0;
+    font-size: 1rem;
+}
+
+.board-replies {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.board-replies li {
+    margin: 0;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<!-- CSP は README「Content Security Policy」の現行の値に、connect-src の https://api.github.com だけを足したもの
+     （議題を開いたときに GitHub から読むため）。本文は GitHub が HTML にしたものを board.js が差し込むので、
+     このページは CSP を外さない。 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com https://api.github.com; frame-src https://www.youtube.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>ハンドボール掲示板｜ハンドプラス</title>
+<meta name="description" content="ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す掲示板です。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/board/">
+<meta property="og:title" content="ハンドボール掲示板">
+<meta property="og:description" content="ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す掲示板です。">
+<!-- OG は**このページ専用**（README「OG 画像の更新手順」の 1 枚 = 1 ページ）。
+     生成元: og-source/index.html → scripts/generate-og.sh board/og-source/index.html board/images/og.jpg -->
+<meta property="og:image" content="https://hand-plus.com/board/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/board/">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../images/icon-180.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<!-- 傘の面（アプリではない）なので、色は --brand に寄せる（style.css「ハンドボール掲示板」）。 -->
+<body class="board-page">
+<header class="site">
+    <div class="inner">
+        <a href="../"><img class="header-icon" src="../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+    </div>
+</header>
+<main>
+    <h1>ハンドボール掲示板</h1>
+    <p class="board-lead">ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す場所です。</p>
+
+    <!-- 議題を開いているときは board.js が隠す（書く入口は一覧の側にだけ置く）。 -->
+    <div class="board-write" data-board-write>
+        <p class="board-cta"><a class="board-button" href="https://github.com/kinjo-ryura/hand-plus.com/issues/new?template=board.yml">GitHub で議題を書く</a></p>
+        <p class="board-note">GitHub のアカウントで書けます。名前を出して参加でき、返信が付くと通知が届きます。アカウントは <a href="https://docs.github.com/ja/get-started/start-your-journey/creating-an-account-on-github">GitHub の案内（日本語）</a>から作れます。</p>
+    </div>
+
+    <!-- 議題の一覧と、?n=<番号> のときはその議題の会話を board.js がここに描く。 -->
+    <section class="board" id="board" data-board-repo="kinjo-ryura/hand-plus.com" data-board-label="議題" aria-live="polite">
+        <noscript><p>議題は <a href="https://github.com/kinjo-ryura/hand-plus.com/issues?q=is%3Aissue%20is%3Aopen%20label%3A%E8%AD%B0%E9%A1%8C">GitHub</a> で読めます。</p></noscript>
+    </section>
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<script src="board.js" defer></script>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。**その代償として `?n=` の議題ごとの閲覧は区別できない。** -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>
