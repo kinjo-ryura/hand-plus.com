@@ -1,7 +1,8 @@
 # ハンドボール掲示板（https://hand-plus.com/board/）の議題。
 # 欄は本文 1 つだけ（書く手間を減らすため）。欄の label を変えたら board/board.js の FORM_HEADING も変える
 # （Issue form は本文の頭に「### <label>」を入れるので、ページでは消して見せる）。
-name: 議題
+# name は 3 文字以上（GitHub の docs に無い制限。「議題」の 2 文字では起票画面から黙って消えた）
+name: 議題を書く
 description: ハンドボールで困っていることや、「こうなったら良いのに」と思うことを書く
 labels: ["議題"]
 body:
