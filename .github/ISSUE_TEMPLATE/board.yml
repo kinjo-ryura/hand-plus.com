@@ -10,6 +10,6 @@ body:
     id: body
     attributes:
       label: 本文
-      placeholder: 何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です
+      placeholder: 何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です。
     validations:
       required: true
