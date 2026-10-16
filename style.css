@@ -830,14 +830,15 @@ button.board-button:disabled {
     cursor: default;
 }
 
-.board-anon {
+/* 書く入口は「匿名 → GitHub」の順（handball-project#605）。匿名のフォームが出ているときだけ間に線を引く。 */
+.board-anon:not([hidden]) + .board-github {
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--border);
 }
 
 .board-anon h2,
-.board-write h3 {
+.board-anon h3 {
     margin: 0 0 4px;
     font-size: 1rem;
 }

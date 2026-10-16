@@ -36,7 +36,7 @@
     const NOTE = "ハンドボール掲示板のフォームから、名前を出さずに届いた投稿です。";
     const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
     // .github/ISSUE_TEMPLATE/board.yml の placeholder と同じ（GitHub の起票フォームと匿名のフォームを揃える）
-    const BODY_PLACEHOLDER = "何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です";
+    const BODY_PLACEHOLDER = "何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です。";
 
     // ── 小さな部品 ──────────────────────────────────────────────
 
@@ -137,11 +137,10 @@
 
     // ── 匿名のフォーム ──────────────────────────────────────────
 
-    const ANON_NOTE = "GitHub のアカウントが無くても書けます。内容を確かめてから載せます。返信が付いても通知は届かないので、このページを開き直して見てください。";
     const UNAVAILABLE = "いまは送れませんでした。時間をおいて、もう一度送ってください（書いた文は消えていません）。";
     const ERRORS = {
-        invalid: `題と本文を書いてください（題は ${TITLE_MAX} 文字、本文は ${BODY_MAX} 文字まで）。`,
-        too_large: `題と本文を書いてください（題は ${TITLE_MAX} 文字、本文は ${BODY_MAX} 文字まで）。`,
+        invalid: `タイトルと本文を書いてください（タイトルは ${TITLE_MAX} 文字、本文は ${BODY_MAX} 文字まで）。`,
+        too_large: `タイトルと本文を書いてください（タイトルは ${TITLE_MAX} 文字、本文は ${BODY_MAX} 文字まで）。`,
         turnstile: "確認が済んでいませんでした。少し待ってから、もう一度送ってください。",
         busy: "いま投稿が多く、受け付けを止めています。時間をおいて送ってください。",
         not_found: "この議題には返信できません。閉じられたか、消された議題です。",
@@ -180,7 +179,7 @@
         let title = null;
         if (kind === "topic") {
             title = el("input", { type: "text", name: "title", maxlength: String(TITLE_MAX), required: "" });
-            fields.push(el("label", { class: "board-field" }, el("span", {}, "題"), title));
+            fields.push(el("label", { class: "board-field" }, el("span", {}, "タイトル"), title));
         }
         const body = el("textarea", { name: "body", rows: "6", maxlength: String(BODY_MAX), required: "", placeholder: BODY_PLACEHOLDER });
         fields.push(el("label", { class: "board-field" }, el("span", {}, "本文"), body));
@@ -291,13 +290,14 @@
         if (issue.comments > comments.length) {
             parts.push(el("p", { class: "board-status" }, "続きは ", el("a", { href: issue.html_url }, "GitHub"), " で読めます。"));
         }
-        parts.push(el("p", { class: "board-cta" }, el("a", { class: "board-button", href: issue.html_url }, "GitHub で返信する")));
+        // 返信の欄も一覧のページと同じく「匿名 → GitHub」の順（handball-project#605）
+        const reply = el("div", { class: "board-write" });
         if (anonEnabled()) {
-            parts.push(el("div", { class: "board-write" },
-                el("h3", {}, "名前を出さずに返信する"),
-                el("p", { class: "board-note" }, ANON_NOTE),
-                anonForm("reply", issue.number)));
+            reply.append(el("div", { class: "board-anon" }, el("h3", {}, "匿名で返信する"), anonForm("reply", issue.number)));
         }
+        reply.append(el("div", { class: "board-github" },
+            el("p", { class: "board-cta" }, el("a", { class: "board-button", href: issue.html_url }, "GitHub で返信する"))));
+        parts.push(reply);
         root.replaceChildren(...parts);
     }
 
@@ -305,7 +305,7 @@
     const viewingIssue = Number.isInteger(number) && number > 0;
     const anon = document.querySelector("[data-board-anon]");
     if (anon && anonEnabled() && !viewingIssue) {
-        anon.append(el("p", { class: "board-note" }, ANON_NOTE), anonForm("topic"));
+        anon.append(anonForm("topic"));
         anon.hidden = false;
     }
     const run = viewingIssue ? showIssue(number) : showList();
