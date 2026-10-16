@@ -809,6 +809,71 @@ a.board-button:hover {
     box-shadow: 0 4px 12px var(--brand-shadow);
 }
 
+/* 匿名のフォーム（handball-project#596）。送るボタンは「GitHub で議題を書く」と同じ形。 */
+button.board-button {
+    padding: 10px 22px;
+    border: 2px solid var(--brand);
+    border-radius: 999px;
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    background: var(--bg);
+    cursor: pointer;
+}
+
+button.board-button:hover:not(:disabled) {
+    box-shadow: 0 4px 12px var(--brand-shadow);
+}
+
+button.board-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.board-anon {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.board-anon h2,
+.board-write h3 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+}
+
+.board-field {
+    display: block;
+    margin: 12px 0;
+}
+
+.board-field span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.board-field input,
+.board-field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+}
+
+.board-field textarea {
+    resize: vertical;
+}
+
+.board-turnstile {
+    min-height: 65px;
+}
+
 .board-status {
     color: var(--muted);
 }

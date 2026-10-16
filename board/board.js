@@ -8,6 +8,11 @@
 // - **本文は GitHub が HTML にしたもの（`body_html`）を受け取る。** Markdown をここで描かない。
 //   差し込む前に、使う要素と属性だけを残す（GitHub が既に無害化しているが、ページに入れる側でも絞る）
 // - **閉じた議題は出さない。** まずいものは GitHub で閉じるか消せば、ページからも消える
+// - **アカウントの無い人は、ここのフォームから書く**（handball-project#596）。送り先は Worker
+//   （data-board-post）で、内容を確かめてから GitHub App の名前で載る。
+//   data-board-sitekey か data-board-post が空のうちはフォームを出さない
+// - **GitHub App（bot）の投稿は、書いた人を「匿名」と出す。** github.com では名前の後ろに [bot] が付き、
+//   本文の最後に注記（NOTE）が付くが、ページでは注記を消して見せる
 (() => {
     "use strict";
 
@@ -22,6 +27,16 @@
     // Issue form は本文の頭に「### <欄の label>」を入れる。.github/ISSUE_TEMPLATE/board.yml の label と揃える
     const FORM_HEADING = "本文";
     const PER_PAGE = 100;
+
+    // 匿名の入口。上限と注記は Worker と揃える（Worker のテストが見る）
+    const POST_BASE = root.dataset.boardPost;
+    const SITEKEY = root.dataset.boardSitekey;
+    const TITLE_MAX = 100;
+    const BODY_MAX = 4000;
+    const NOTE = "ハンドボール掲示板のフォームから、名前を出さずに届いた投稿です。";
+    const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    // .github/ISSUE_TEMPLATE/board.yml の placeholder と同じ（GitHub の起票フォームと匿名のフォームを揃える）
+    const BODY_PLACEHOLDER = "何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です";
 
     // ── 小さな部品 ──────────────────────────────────────────────
 
@@ -88,6 +103,12 @@
         const body = doc.body;
         const first = body.firstElementChild;
         if (first && /^H[1-6]$/.test(first.tagName) && first.textContent.trim() === FORM_HEADING) first.remove();
+        // 匿名の投稿の最後の「区切り線 + 注記」は github.com で読む人向けなので、ページでは消す
+        const last = body.lastElementChild;
+        if (last && last.tagName === "P" && last.textContent.trim() === NOTE && last.previousElementSibling?.tagName === "HR") {
+            last.previousElementSibling.remove();
+            last.remove();
+        }
 
         for (const node of [...body.querySelectorAll("*")]) {
             if (!node.isConnected) continue;
@@ -114,6 +135,104 @@
         return out;
     }
 
+    // ── 匿名のフォーム ──────────────────────────────────────────
+
+    const ANON_NOTE = "GitHub のアカウントが無くても書けます。内容を確かめてから載せます。返信が付いても通知は届かないので、このページを開き直して見てください。";
+    const UNAVAILABLE = "いまは送れませんでした。時間をおいて、もう一度送ってください（書いた文は消えていません）。";
+    const ERRORS = {
+        invalid: `題と本文を書いてください（題は ${TITLE_MAX} 文字、本文は ${BODY_MAX} 文字まで）。`,
+        too_large: `題と本文を書いてください（題は ${TITLE_MAX} 文字、本文は ${BODY_MAX} 文字まで）。`,
+        turnstile: "確認が済んでいませんでした。少し待ってから、もう一度送ってください。",
+        busy: "いま投稿が多く、受け付けを止めています。時間をおいて送ってください。",
+        not_found: "この議題には返信できません。閉じられたか、消された議題です。",
+    };
+
+    function anonEnabled() {
+        return Boolean(POST_BASE && SITEKEY);
+    }
+
+    let turnstileLoading = null;
+
+    // Turnstile は投稿のフォームを出すときだけ読む（読むだけの人には読ませない）
+    function loadTurnstile() {
+        turnstileLoading ??= new Promise((resolve, reject) => {
+            const script = el("script", { src: TURNSTILE_SRC });
+            script.async = true;
+            script.addEventListener("load", () => (window.turnstile ? resolve(window.turnstile) : reject(new Error("turnstile"))));
+            script.addEventListener("error", reject);
+            document.head.append(script);
+        });
+        return turnstileLoading;
+    }
+
+    function resultMessage(kind, data) {
+        if (data.result === "published") {
+            return ["載りました。", el("a", { href: data.url }, kind === "topic" ? "議題を開く" : "開き直して見る")];
+        }
+        if (data.result === "held") return ["受け取りました。内容を確かめてから載せます。少し時間がかかることがあります。"];
+        if (data.result === "rejected") return ["この内容は、掲示板には載せられませんでした。"];
+        return [UNAVAILABLE];
+    }
+
+    // kind = "topic"（議題）| "reply"（返信。issueNumber の議題へ）
+    function anonForm(kind, issueNumber) {
+        const fields = [];
+        let title = null;
+        if (kind === "topic") {
+            title = el("input", { type: "text", name: "title", maxlength: String(TITLE_MAX), required: "" });
+            fields.push(el("label", { class: "board-field" }, el("span", {}, "題"), title));
+        }
+        const body = el("textarea", { name: "body", rows: "6", maxlength: String(BODY_MAX), required: "", placeholder: BODY_PLACEHOLDER });
+        fields.push(el("label", { class: "board-field" }, el("span", {}, "本文"), body));
+        const check = el("div", { class: "board-turnstile" });
+        const button = el("button", { type: "submit", class: "board-button" }, "送る");
+        const status = el("p", { class: "board-status", "aria-live": "polite" });
+        const form = el("form", { class: "board-form" }, ...fields, check, el("p", { class: "board-cta" }, button), status);
+
+        let widget = null;
+        loadTurnstile().then((turnstile) => {
+            widget = turnstile.render(check, { sitekey: SITEKEY, language: "ja" });
+        }).catch(() => {
+            status.textContent = UNAVAILABLE;
+            button.disabled = true;
+        });
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const token = widget === null ? "" : window.turnstile.getResponse(widget);
+            if (!token) {
+                status.textContent = ERRORS.turnstile;
+                return;
+            }
+            button.disabled = true;
+            status.textContent = "送っています…";
+            const payload = kind === "topic"
+                ? { title: title.value, body: body.value, turnstileToken: token }
+                : { issue: issueNumber, body: body.value, turnstileToken: token };
+            try {
+                const res = await fetch(`${POST_BASE}/${kind === "topic" ? "topics" : "replies"}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok) {
+                    form.reset();
+                    status.replaceChildren(...resultMessage(kind, data));
+                } else {
+                    status.textContent = ERRORS[data.error] ?? UNAVAILABLE;
+                }
+            } catch {
+                status.textContent = UNAVAILABLE;
+            } finally {
+                button.disabled = false;
+                // token は 1 回しか通らない
+                window.turnstile.reset(widget);
+            }
+        });
+        return form;
+    }
+
     // ── 一覧 ────────────────────────────────────────────────────
 
     async function showList() {
@@ -136,8 +255,12 @@
 
     // ── 議題 ────────────────────────────────────────────────────
 
+    function author(user) {
+        return user.type === "Bot" ? "匿名" : user.login;
+    }
+
     function post(item, title) {
-        const meta = el("p", { class: "board-meta" }, `${item.user.login}・${formatDate(item.created_at)}`);
+        const meta = el("p", { class: "board-meta" }, `${author(item.user)}・${formatDate(item.created_at)}`);
         return el("article", { class: "board-post" }, ...(title ? [el("h2", {}, title)] : []), meta,
             cleanBody(item.body_html, item.html_url));
     }
@@ -169,10 +292,22 @@
             parts.push(el("p", { class: "board-status" }, "続きは ", el("a", { href: issue.html_url }, "GitHub"), " で読めます。"));
         }
         parts.push(el("p", { class: "board-cta" }, el("a", { class: "board-button", href: issue.html_url }, "GitHub で返信する")));
+        if (anonEnabled()) {
+            parts.push(el("div", { class: "board-write" },
+                el("h3", {}, "名前を出さずに返信する"),
+                el("p", { class: "board-note" }, ANON_NOTE),
+                anonForm("reply", issue.number)));
+        }
         root.replaceChildren(...parts);
     }
 
     const number = Number(new URLSearchParams(location.search).get("n"));
-    const run = Number.isInteger(number) && number > 0 ? showIssue(number) : showList();
+    const viewingIssue = Number.isInteger(number) && number > 0;
+    const anon = document.querySelector("[data-board-anon]");
+    if (anon && anonEnabled() && !viewingIssue) {
+        anon.append(el("p", { class: "board-note" }, ANON_NOTE), anonForm("topic"));
+        anon.hidden = false;
+    }
+    const run = viewingIssue ? showIssue(number) : showList();
     run.catch(showFailure);
 })();
