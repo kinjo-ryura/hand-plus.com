@@ -19,6 +19,7 @@
        もう片方も変えること。 */
     --brand: #F59E0B;
     --brand-shadow: rgba(245, 158, 11, 0.30);
+    --brand-soft: rgba(245, 158, 11, 0.18);
 }
 
 * {
@@ -910,6 +911,18 @@ button.board-button:disabled {
     margin: 2px 0 0;
     color: var(--muted);
     font-size: 13px;
+}
+
+/* 運営（リポの持ち主）の投稿の書いた人（handball-project#615）。押せない印なので、ボタン（.board-button の
+   「琥珀の枠・丸い端」）と見分けがつくよう、枠を付けず薄い琥珀で塗り、角を小さくする。文字は地の色
+   （琥珀の文字はコントラストが足りない）。 */
+.board-owner {
+    display: inline-block;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: var(--brand-soft);
+    color: var(--text);
+    font-weight: 700;
 }
 
 .board-back {
