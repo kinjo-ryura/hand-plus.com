@@ -778,8 +778,13 @@ footer.site p {
     margin-bottom: 20px;
 }
 
+/* .board-write は書く入口をまとめて隠すための入れ物で、箱は入口ごとに持つ（handball-project#606）。 */
 .board-write {
     margin: 20px 0 8px;
+}
+
+.board-anon,
+.board-github {
     padding: 16px 20px;
     background: var(--bg-soft);
     border-radius: 12px;
@@ -809,7 +814,7 @@ a.board-button:hover {
     box-shadow: 0 4px 12px var(--brand-shadow);
 }
 
-/* 匿名のフォーム（handball-project#596）。送るボタンは「GitHub で議題を書く」と同じ形。 */
+/* 匿名のフォーム（handball-project#596）。送るボタンは「GitHub にログインして投稿」と同じ形。 */
 button.board-button {
     padding: 10px 22px;
     border: 2px solid var(--brand);
@@ -830,15 +835,20 @@ button.board-button:disabled {
     cursor: default;
 }
 
-/* 書く入口は「匿名 → GitHub」の順（handball-project#605）。匿名のフォームが出ているときだけ間に線を引く。 */
+/* 書く入口は「匿名 → GitHub」の順（handball-project#605）。1 つの箱に線で区切って入れると、GitHub の段が
+   匿名のフォームの付け足しに見えるので、箱を分けて 2 つの入口として並べる（#606）。 */
 .board-anon:not([hidden]) + .board-github {
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
+    margin-top: 16px;
+}
+
+.board-github > :last-child {
+    margin-bottom: 0;
 }
 
 .board-anon h2,
-.board-anon h3 {
+.board-anon h3,
+.board-github h2,
+.board-github h3 {
     margin: 0 0 4px;
     font-size: 1rem;
 }

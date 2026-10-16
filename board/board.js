@@ -290,13 +290,15 @@
         if (issue.comments > comments.length) {
             parts.push(el("p", { class: "board-status" }, "続きは ", el("a", { href: issue.html_url }, "GitHub"), " で読めます。"));
         }
-        // 返信の欄も一覧のページと同じく「匿名 → GitHub」の順（handball-project#605）
+        // 返信の欄も一覧のページと同じく「匿名 → GitHub」の順（handball-project#605）で、見出しとボタンの言い方も揃える（#606）
         const reply = el("div", { class: "board-write" });
         if (anonEnabled()) {
             reply.append(el("div", { class: "board-anon" }, el("h3", {}, "匿名で返信する"), anonForm("reply", issue.number)));
         }
         reply.append(el("div", { class: "board-github" },
-            el("p", { class: "board-cta" }, el("a", { class: "board-button", href: issue.html_url }, "GitHub で返信する"))));
+            el("h3", {}, "ニックネーム付きで返信する"),
+            el("p", { class: "board-cta" }, el("a", { class: "board-button", href: issue.html_url },
+                "GitHub にログインして返信 ", el("span", { "aria-hidden": "true" }, "↗")))));
         parts.push(reply);
         root.replaceChildren(...parts);
     }
