@@ -1,0 +1,6 @@
+# 白紙の Issue を出さない（管理者には出る）。白紙で書かれると「議題」のラベルが付かず、掲示板のページに出ない。
+blank_issues_enabled: false
+contact_links:
+  - name: ハンドボール掲示板
+    url: https://hand-plus.com/board/
+    about: 議題の一覧と会話は、こちらのページでも読めます

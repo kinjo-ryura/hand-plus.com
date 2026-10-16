@@ -1,0 +1,14 @@
+# ハンドボール掲示板（https://hand-plus.com/board/）の議題。
+# 欄は本文 1 つだけ（書く手間を減らすため）。欄の label を変えたら board/board.js の FORM_HEADING も変える
+# （Issue form は本文の頭に「### <label>」を入れるので、ページでは消して見せる）。
+name: 議題
+description: ハンドボールで困っていることや、「こうなったら良いのに」と思うことを書く
+labels: ["議題"]
+body:
+  - type: textarea
+    id: body
+    attributes:
+      label: 本文
+      placeholder: 何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です
+    validations:
+      required: true
