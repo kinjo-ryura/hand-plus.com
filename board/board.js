@@ -13,6 +13,8 @@
 //   data-board-sitekey か data-board-post が空のうちはフォームを出さない
 // - **GitHub App（bot）の投稿は、書いた人を「匿名」と出す。** github.com では名前の後ろに [bot] が付き、
 //   本文の最後に注記（NOTE）が付くが、ページでは注記を消して見せる
+// - **リポの持ち主（author_association が OWNER）の投稿は、書いた人を「運営」と出す**（handball-project#615）。
+//   読む人にはアカウント名では誰か分からない。github.com ではアカウント名のまま
 (() => {
     "use strict";
 
@@ -254,12 +256,15 @@
 
     // ── 議題 ────────────────────────────────────────────────────
 
-    function author(user) {
-        return user.type === "Bot" ? "匿名" : user.login;
+    // item は議題か返信。bot を先に見る（匿名の投稿は運営が載せたものでも「匿名」）
+    function author(item) {
+        if (item.user.type === "Bot") return "匿名";
+        if (item.author_association === "OWNER") return "運営";
+        return item.user.login;
     }
 
     function post(item, title) {
-        const meta = el("p", { class: "board-meta" }, `${author(item.user)}・${formatDate(item.created_at)}`);
+        const meta = el("p", { class: "board-meta" }, `${author(item)}・${formatDate(item.created_at)}`);
         return el("article", { class: "board-post" }, ...(title ? [el("h2", {}, title)] : []), meta,
             cleanBody(item.body_html, item.html_url));
     }
