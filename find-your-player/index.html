@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<!-- CSP は README「Content Security Policy」の現行の値に、次を足したもの（README の同じ節に理由）。
+     - connect-src の https://board-api.hand-plus.com（結果を見た数とリンクを押した数の送り先。掲示板の Worker・handball-project#614） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com https://board-api.hand-plus.com; frame-src https://www.youtube.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>推しの選手を見つける｜ハンドプラス</title>
+<meta name="description" content="いくつかの質問に答えると、リーグH の選手を 3 人紹介します。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/find-your-player/">
+<meta property="og:title" content="推しの選手を見つける">
+<meta property="og:description" content="いくつかの質問に答えると、リーグH の選手を 3 人紹介します。">
+<!-- OG は**このページ専用**（README「OG 画像の更新手順」の 1 枚 = 1 ページ）。
+     生成元: og-source/index.html → scripts/generate-og.sh find-your-player/og-source/index.html find-your-player/images/og.jpg -->
+<meta property="og:image" content="https://hand-plus.com/find-your-player/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/find-your-player/">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../images/icon-180.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<!-- 傘の面（アプリではない）なので、色は --brand に寄せる（style.css「推しの選手を見つける」）。 -->
+<body class="finder-page">
+<header class="site">
+    <div class="inner">
+        <a href="../"><img class="header-icon" src="../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+    </div>
+</header>
+<main>
+    <h1>推しの選手を見つける</h1>
+    <p class="finder-lead">いくつかの質問に答えると、リーグH の選手を 3 人紹介します。気になった選手がいたら、試合で見てみてください。</p>
+
+    <!-- 問いと結果は finder.js がここに描く。data-finder-events は、結果を見た数とリンクを押した数の送り先（掲示板の Worker）。 -->
+    <section class="finder" id="finder" data-finder-events="https://board-api.hand-plus.com" aria-live="polite">
+        <noscript><p>このページは JavaScript を使います。</p></noscript>
+    </section>
+</main>
+<footer class="site">
+    <p>
+        X (<a href="https://x.com/handballballbal">@handballballbal</a>)
+    </p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<script type="module" src="finder.js"></script>
+<!-- Cloudflare Web Analytics（handball-project#252）。**この token は秘密ではない** —
+     公開ページに埋まる前提のもので、ページのソースを見れば誰でも読める（API token とは別物）。
+     cookie / localStorage を使わず、URL の query string・hash・認証情報はビーコンが
+     送信前に落とす（`cleanLocation`）。数えるのはページの表示だけなので、結果を見た数とリンクを押した数は finder.js が Worker へ送る。 -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>
