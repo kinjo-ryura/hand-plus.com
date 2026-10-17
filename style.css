@@ -800,22 +800,15 @@ footer.site p {
     margin: 4px 0 12px;
 }
 
-a.board-button {
-    display: inline-block;
-    padding: 10px 22px;
-    border: 2px solid var(--brand);
-    border-radius: 999px;
-    color: var(--text);
-    text-decoration: none;
+/* GitHub の入口（「GitHub にログインして投稿 ↗」・返信の欄の「GitHub にログインして返信 ↗」）。以前は「送る」と同じ
+   ボタンで、同じ強さに見えていた。GitHub のアカウントを持つ人は少なく、主な入口は匿名投稿なので、文字のリンクにして
+   書く入口でボタンの形をしているのを「送る」だけにする（handball-project#619）。推しのページの .finder-link と同じ
+   「従の操作はリンクの見た目」。太字にするのは、下の説明の文の中のリンク（登録の案内）と見分けるため。 */
+a.board-link {
     font-weight: 700;
-    background: var(--bg);
 }
 
-a.board-button:hover {
-    box-shadow: 0 4px 12px var(--brand-shadow);
-}
-
-/* 匿名のフォーム（handball-project#596）。送るボタンは「GitHub にログインして投稿」と同じ形。 */
+/* 匿名のフォーム（handball-project#596）。書く入口でボタンの形をしているのは送るボタンだけ（#619）。 */
 button.board-button {
     padding: 10px 22px;
     border: 2px solid var(--brand);

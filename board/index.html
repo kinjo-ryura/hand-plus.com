@@ -57,10 +57,11 @@
 
         <!-- アカウントのある人の入口。見出しは「匿名投稿」と対にする（handball-project#606）。「記名」は聞き慣れず、
              「名前を出して」は本名と取られるので、GitHub で出るのがアカウント名であることに合わせた。
-             ボタンの ↗ は、押すとサイトの外（github.com）へ移る印。 -->
+             入口はボタンにせず文字のリンクにする（handball-project#619）。主な入口は匿名投稿なので、書く入口で
+             ボタンの形をしているのは匿名の「送る」だけにする。↗ は、押すとサイトの外（github.com）へ移る印。 -->
         <div class="board-github">
             <h2>ニックネーム付きで投稿</h2>
-            <p class="board-cta"><a class="board-button" href="https://github.com/kinjo-ryura/hand-plus.com/issues/new?template=board.yml">GitHub にログインして投稿 <span aria-hidden="true">↗</span></a></p>
+            <p class="board-cta"><a class="board-link" href="https://github.com/kinjo-ryura/hand-plus.com/issues/new?template=board.yml">GitHub にログインして投稿 <span aria-hidden="true">↗</span></a></p>
             <p class="board-note">GitHub のアカウント名で載り、返信が付くと通知が届きます。アカウントは <a href="https://docs.github.com/ja/get-started/start-your-journey/creating-an-account-on-github">GitHub の案内（日本語）</a>から作れます。</p>
         </div>
     </div>
