@@ -890,6 +890,33 @@ button.board-button:disabled {
     color: var(--muted);
 }
 
+/* 匿名のフォームを送っている間の印（handball-project#616）。Worker は判定と公開を済ませてから返すので数秒かかり、
+   文字だけでは止まっているのか進んでいるのか分からない。動きを減らす設定の人には回さない（印は残す）。 */
+.board-spinner {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 1em;
+    height: 1em;
+    margin-right: 6px;
+    vertical-align: -0.125em;
+    border: 2px solid var(--border);
+    border-top-color: var(--brand);
+    border-radius: 50%;
+    animation: board-spin 0.8s linear infinite;
+}
+
+@keyframes board-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .board-spinner {
+        animation: none;
+    }
+}
+
 .board-list {
     list-style: none;
     padding: 0;

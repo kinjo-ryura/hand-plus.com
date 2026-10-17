@@ -11,6 +11,9 @@
 // - **アカウントの無い人は、ここのフォームから書く**（handball-project#596）。送り先は Worker
 //   （data-board-post）で、内容を確かめてから GitHub App の名前で載る。
 //   data-board-sitekey か data-board-post が空のうちはフォームを出さない
+// - **匿名の投稿が載ったら、送った人の画面にはその場で出す**（handball-project#616）。Worker が載せたものを
+//   GitHub から読むときと同じ形で返すので、読み直さない（読み直すと 60 秒のキャッシュで古いものが返りうる）。
+//   返信は並びの最後に足し、議題はその議題のページへ移る。中身が返らない（古い Worker）ときは開くリンクを出す
 // - **GitHub App（bot）の投稿は、書いた人を「匿名」と出す。** github.com では名前の後ろに [bot] が付き、
 //   本文の最後に注記（NOTE）が付くが、ページでは注記を消して見せる
 // - **リポの持ち主（author_association が OWNER）の投稿は、書いた人を「運営」と出す**（handball-project#615）。
@@ -176,8 +179,16 @@
         return [UNAVAILABLE];
     }
 
-    // kind = "topic"（議題）| "reply"（返信。issueNumber の議題へ）
-    function anonForm(kind, issueNumber) {
+    // 載ったものの中身（Worker が GitHub の返事をそのまま渡したもの）。古い Worker は返さないので null
+    function publishedItem(data) {
+        const item = data.item;
+        if (data.result !== "published" || !item || typeof item !== "object") return null;
+        return typeof item.body_html === "string" && typeof item.html_url === "string" ? item : null;
+    }
+
+    // kind = "topic"（議題）| "reply"（返信。issueNumber の議題へ）。
+    // onPublished(item) は載ったものをその場で出す。null なら resultMessage の開くリンクを出す
+    function anonForm(kind, issueNumber, onPublished) {
         const fields = [];
         let title = null;
         if (kind === "topic") {
@@ -207,7 +218,8 @@
                 return;
             }
             button.disabled = true;
-            status.textContent = "送っています…";
+            // Worker は判定と公開を済ませてから返すので数秒かかる。止まっていないと分かるよう、回る印を添える
+            status.replaceChildren(el("span", { class: "board-spinner", "aria-hidden": "true" }), "送っています…");
             const payload = kind === "topic"
                 ? { title: title.value, body: body.value, turnstileToken: token }
                 : { issue: issueNumber, body: body.value, turnstileToken: token };
@@ -219,8 +231,15 @@
                 });
                 const data = await res.json().catch(() => ({}));
                 if (res.ok) {
-                    form.reset();
-                    status.replaceChildren(...resultMessage(kind, data));
+                    // 載せないと判定されたときは書いた文を残す（誤判定なら、書き直して送り直せる。handball-project#616）
+                    if (data.result === "published" || data.result === "held") form.reset();
+                    const item = onPublished ? publishedItem(data) : null;
+                    if (item) {
+                        status.textContent = "載りました。";
+                        onPublished(item);
+                    } else {
+                        status.replaceChildren(...resultMessage(kind, data));
+                    }
                 } else {
                     status.textContent = ERRORS[data.error] ?? UNAVAILABLE;
                 }
@@ -272,11 +291,19 @@
             cleanBody(item.body_html, item.html_url));
     }
 
-    async function showIssue(number) {
+    function backLink() {
+        return el("p", { class: "board-back" }, el("a", { href: "./" }, "← 議題の一覧"));
+    }
+
+    // 議題を開いているときは、一覧の側の書く入口を隠す（書く入口は一覧の側にだけ置く）
+    function hideListWrite() {
         const write = document.querySelector("[data-board-write]");
         if (write) write.hidden = true;
-        const back = el("p", { class: "board-back" }, el("a", { href: "./" }, "← 議題の一覧"));
-        root.replaceChildren(back, el("p", { class: "board-status" }, "読み込み中…"));
+    }
+
+    async function showIssue(number) {
+        hideListWrite();
+        root.replaceChildren(backLink(), el("p", { class: "board-status" }, "読み込み中…"));
 
         let issue = null;
         try {
@@ -285,23 +312,53 @@
             if (!(e instanceof ApiError && NOT_FOUND.has(e.status))) throw e;
         }
         if (!issue || !isBoardIssue(issue)) {
-            root.replaceChildren(back, el("p", { class: "board-status" }, "この議題は見つかりませんでした。"));
+            root.replaceChildren(backLink(), el("p", { class: "board-status" }, "この議題は見つかりませんでした。"));
             return;
         }
-        document.title = `${issue.title}｜ハンドボール掲示板`;
         const comments = issue.comments > 0 ? await get(`/issues/${number}/comments?per_page=${PER_PAGE}`) : [];
+        renderIssue(issue, comments);
+    }
 
-        const parts = [back, post(issue, issue.title), el("h3", { class: "board-replies-heading" }, `返信 ${issue.comments} 件`)];
-        if (comments.length > 0) {
-            parts.push(el("ol", { class: "board-replies" }, ...comments.map((c) => el("li", {}, post(c)))));
-        }
-        if (issue.comments > comments.length) {
+    // 匿名の議題が載ったら、その議題のページへ移る（handball-project#616）。Worker が返した中身で描き、GitHub を
+    // 読み直さない。戻る操作で一覧に戻ったときは、開き直して読む（下の popstate）
+    function openTopic(issue) {
+        history.pushState(null, "", `?n=${issue.number}`);
+        hideListWrite();
+        renderIssue(issue, [], "載りました。");
+        window.scrollTo(0, 0);
+    }
+
+    // notice は一番上に出す一言（議題が載った直後の「載りました。」）
+    function renderIssue(issue, comments, notice) {
+        document.title = `${issue.title}｜ハンドボール掲示板`;
+        let count = issue.comments;
+        const heading = el("h3", { class: "board-replies-heading" }, `返信 ${count} 件`);
+        const replies = el("ol", { class: "board-replies" }, ...comments.map((c) => el("li", {}, post(c))));
+        const parts = [backLink()];
+        if (notice) parts.push(el("p", { class: "board-status" }, notice));
+        parts.push(post(issue, issue.title), heading);
+        if (comments.length > 0) parts.push(replies);
+        const more = issue.comments > comments.length;
+        if (more) {
             parts.push(el("p", { class: "board-status" }, "続きは ", el("a", { href: issue.html_url }, "GitHub"), " で読めます。"));
         }
+
+        // 匿名の返信が載ったら、並びの最後にその場で足す（handball-project#616）。開いた後に他の人が書いた返信は、
+        // 開き直すまで出ない。読みきれていない返信がある（more）ときは、足すと順が崩れるので開くリンクのまま
+        function addReply(item) {
+            if (!replies.isConnected) heading.after(replies);
+            const li = el("li", {}, post(item));
+            replies.append(li);
+            count += 1;
+            heading.textContent = `返信 ${count} 件`;
+            li.scrollIntoView({ block: "nearest" });
+        }
+
         // 返信の欄も一覧のページと同じく「匿名 → GitHub」の順（handball-project#605）で、見出しとボタンの言い方も揃える（#606）
         const reply = el("div", { class: "board-write" });
         if (anonEnabled()) {
-            reply.append(el("div", { class: "board-anon" }, el("h3", {}, "匿名で返信する"), anonForm("reply", issue.number)));
+            reply.append(el("div", { class: "board-anon" }, el("h3", {}, "匿名で返信する"),
+                anonForm("reply", issue.number, more ? null : addReply)));
         }
         reply.append(el("div", { class: "board-github" },
             el("h3", {}, "ニックネーム付きで返信する"),
@@ -315,9 +372,11 @@
     const viewingIssue = Number.isInteger(number) && number > 0;
     const anon = document.querySelector("[data-board-anon]");
     if (anon && anonEnabled() && !viewingIssue) {
-        anon.append(anonForm("topic"));
+        anon.append(anonForm("topic", null, openTopic));
         anon.hidden = false;
     }
+    // openTopic が履歴に足した議題のページから戻ったとき、描き直す代わりに開き直す
+    window.addEventListener("popstate", () => location.reload());
     const run = viewingIssue ? showIssue(number) : showList();
     run.catch(showFailure);
 })();
