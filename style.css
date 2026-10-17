@@ -1047,6 +1047,20 @@ button.board-button:disabled {
     color: var(--muted);
 }
 
+/* ページが生まれた掲示板の議題（handball-project#618）。掲示板の書く入口（.board-anon・.board-github）と同じ箱にして、
+   ここから先は掲示板の話だと見た目で分かるようにする。ボタンにしないのは、結果の画面で押す所を増やさないため。 */
+.finder-origin {
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+    font-size: 15px;
+}
+
+.finder-origin a {
+    font-weight: 700;
+}
+
 /* 選択肢は押すと次の問いへ進むので、1 つずつ押しやすい大きさで縦に並べる */
 .finder-options {
     display: flex;
