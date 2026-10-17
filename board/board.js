@@ -7,7 +7,10 @@
 //   超えたとき・読めないときは GitHub の一覧へ案内する
 // - **本文は GitHub が HTML にしたもの（`body_html`）を受け取る。** Markdown をここで描かない。
 //   差し込む前に、使う要素と属性だけを残す（GitHub が既に無害化しているが、ページに入れる側でも絞る）
-// - **閉じた議題は出さない。** まずいものは GitHub で閉じるか消せば、ページからも消える
+// - **閉じた議題は、「解決した」で閉じたものだけを解決済みとして出す**（handball-project#618）。一覧では書く入口の
+//   下に並べ、議題のページでは札を付けて返信も受ける（Worker も同じ議題への返信を受ける）。まずいものは
+//   「対応しない」で閉じるか、ラベル「議題」を外すか消せば、ページからも消える。GitHub の閉じるボタンの既定は
+//   「解決した」なので、隠すために閉じるときは閉じ方を選ぶ
 // - **アカウントの無い人は、ここのフォームから書く**（handball-project#596）。送り先は Worker
 //   （data-board-post）で、内容を確かめてから GitHub App の名前で載る。
 //   data-board-sitekey か data-board-post が空のうちはフォームを出さない
@@ -81,8 +84,14 @@
         return res.json();
     }
 
+    // 「解決した」で閉じた議題（handball-project#618）。「対応しない」など他の理由で閉じたものは出さない。
+    // Worker の isSolved と同じ形（返信を受けるかが揃っていないと、返信の欄から送っても断られる）
+    function isSolved(issue) {
+        return issue.state === "closed" && issue.state_reason === "completed";
+    }
+
     function isBoardIssue(issue) {
-        return !issue.pull_request && issue.state === "open" && issue.labels.some((l) => l.name === LABEL);
+        return !issue.pull_request && (issue.state === "open" || isSolved(issue)) && issue.labels.some((l) => l.name === LABEL);
     }
 
     function showFailure() {
@@ -256,20 +265,36 @@
 
     // ── 一覧 ────────────────────────────────────────────────────
 
-    async function showList() {
-        root.replaceChildren(el("p", { class: "board-status" }, "読み込み中…"));
-        const issues = (await get(`/issues?state=open&labels=${encodeURIComponent(LABEL)}&sort=updated&per_page=${PER_PAGE}`))
-            .filter(isBoardIssue);
-        const heading = el("h2", {}, "議題");
-        if (issues.length === 0) {
-            root.replaceChildren(heading, el("p", { class: "board-status" }, "まだ議題はありません。"));
-            return;
-        }
-        const list = el("ul", { class: "board-list" }, ...issues.map((issue) => el("li", {},
+    function topicList(issues) {
+        return el("ul", { class: "board-list" }, ...issues.map((issue) => el("li", {},
             el("a", { href: `?n=${issue.number}` }, issue.title),
             el("p", { class: "board-meta" }, `返信 ${issue.comments} 件・${formatDate(issue.updated_at)}`))));
-        root.replaceChildren(heading, list);
-        if (issues.length === PER_PAGE) {
+    }
+
+    // 解決済みは書く入口の下に並べる（handball-project#618）。未解決の一覧に混ぜると、未解決が埋もれる。
+    // 増えて長くなったら別のページへ移す
+    function showSolved(issues) {
+        const solved = document.querySelector("[data-board-solved]");
+        if (!solved || issues.length === 0) return;
+        solved.replaceChildren(el("h2", {}, "解決済み"), topicList(issues));
+        solved.hidden = false;
+    }
+
+    async function showList() {
+        root.replaceChildren(el("p", { class: "board-status" }, "読み込み中…"));
+        // 解決済みも同じ 1 回で読んで、ここで分ける（1 時間 60 回の枠を増やさない）
+        const fetched = await get(`/issues?state=all&labels=${encodeURIComponent(LABEL)}&sort=updated&per_page=${PER_PAGE}`);
+        const shown = fetched.filter(isBoardIssue);
+        const issues = shown.filter((issue) => issue.state === "open");
+        showSolved(shown.filter(isSolved));
+        const heading = el("h2", {}, "議題");
+        if (issues.length === 0) {
+            const empty = shown.length === 0 ? "まだ議題はありません。" : "いまは、解決していない議題はありません。";
+            root.replaceChildren(heading, el("p", { class: "board-status" }, empty));
+            return;
+        }
+        root.replaceChildren(heading, topicList(issues));
+        if (fetched.length === PER_PAGE) {
             root.append(el("p", { class: "board-status" }, "続きは ", el("a", { href: LIST_ON_GITHUB }, "GitHub"), " で読めます。"));
         }
     }
@@ -287,6 +312,7 @@
         const name = author(item);
         const meta = el("p", { class: "board-meta" },
             name === "運営" ? el("span", { class: "board-owner" }, name) : name, `・${formatDate(item.created_at)}`);
+        if (title && isSolved(item)) meta.append(" ", el("span", { class: "board-solved-mark" }, "解決済み"));
         return el("article", { class: "board-post" }, ...(title ? [el("h2", {}, title)] : []), meta,
             cleanBody(item.body_html, item.html_url));
     }
