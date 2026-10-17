@@ -1006,3 +1006,174 @@ button.board-button:disabled {
 .board-replies li {
     margin: 0;
 }
+
+/* 推しの選手を見つける（find-your-player/。handball-project#614）。問いと結果は finder.js が描く。
+   掲示板と同じく傘の面なので --accent（ハンド記録の紫）は使わず、ボタンは「枠 --brand・文字は地の色」にする。 */
+.finder-lead {
+    margin-bottom: 20px;
+}
+
+.finder h2 {
+    margin: 0 0 12px;
+}
+
+.finder h2:focus {
+    outline: none;
+}
+
+.finder-progress {
+    margin: 0 0 4px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.finder-note {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* 選択肢は押すと次の問いへ進むので、1 つずつ押しやすい大きさで縦に並べる */
+.finder-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.finder-option {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.finder-option:hover {
+    border-color: var(--brand);
+}
+
+/* 前の問いへ戻ったときに、前に選んだものが分かるようにする */
+.finder-option.is-chosen {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+    font-weight: 700;
+}
+
+.finder-button {
+    padding: 10px 22px;
+    border: 2px solid var(--brand);
+    border-radius: 999px;
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    background: var(--bg);
+    cursor: pointer;
+}
+
+.finder-button:hover:not(:disabled) {
+    box-shadow: 0 4px 12px var(--brand-shadow);
+}
+
+.finder-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* 「前の質問へ」「最初から答え直す」は従の操作なので、リンクの見た目にする */
+.finder-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--link);
+    font: inherit;
+    cursor: pointer;
+}
+
+.finder-back {
+    font-size: 14px;
+}
+
+.finder-field {
+    display: block;
+    margin: 12px 0;
+}
+
+.finder-field span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.finder-field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+}
+
+.finder-results {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+}
+
+.finder-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 12px 0;
+}
+
+.finder-card h3 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.finder-meta {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.finder-plain {
+    font-size: 14px;
+}
+
+/* 「ここを見て」は見出しのように小さく上に置き、一文を本文の大きさで読ませる */
+.finder-point strong {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.finder-common {
+    display: inline-block;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: var(--brand-soft);
+    font-size: 14px;
+}
+
+.finder-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin-bottom: 0;
+}
+
+.finder-again {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin: 16px 0;
+}
