@@ -37,8 +37,9 @@
     <h1>ハンドボール掲示板</h1>
     <p class="board-lead">ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す場所です。</p>
 
-    <!-- 並びは「議題の一覧 → 匿名投稿 → GitHub」（handball-project#605）。読みに来た人がまず議題を見て、
-         何を書く場所かを議題から知る。書く入口は、入りやすい匿名を GitHub より先に置く。 -->
+    <!-- 並びは「議題の一覧 → 匿名投稿 → GitHub → 解決済み」（handball-project#605・#618）。読みに来た人がまず議題を見て、
+         何を書く場所かを議題から知る。書く入口は、入りやすい匿名を GitHub より先に置く。
+         解決済みは「こうやって解決された」例で、未解決の一覧に混ぜると未解決が埋もれるので一番下に置く。 -->
 
     <!-- 議題の一覧と、?n=<番号> のときはその議題の会話を board.js がここに描く。 -->
     <section class="board" id="board" data-board-repo="kinjo-ryura/hand-plus.com" data-board-label="議題"
@@ -63,6 +64,9 @@
             <p class="board-note">GitHub のアカウント名で載り、返信が付くと通知が届きます。アカウントは <a href="https://docs.github.com/ja/get-started/start-your-journey/creating-an-account-on-github">GitHub の案内（日本語）</a>から作れます。</p>
         </div>
     </div>
+
+    <!-- 「解決した」で閉じた議題（handball-project#618）は board.js がここに描く。無いときと、議題を開いているときは隠したまま。 -->
+    <section class="board-solved" data-board-solved hidden></section>
 </main>
 <footer class="site">
     <p>

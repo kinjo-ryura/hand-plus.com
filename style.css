@@ -952,6 +952,21 @@ button.board-button:disabled {
     font-weight: 700;
 }
 
+/* 解決済みの議題（handball-project#618）。一覧では書く入口の下に並べ、議題のページでは書いた人と日付の後に札を付ける。
+   札は「運営」と同じく押せない印なので枠を付けず、運営の琥珀と見分けがつくよう灰色で塗る。 */
+.board-solved {
+    margin-top: 32px;
+}
+
+.board-solved-mark {
+    display: inline-block;
+    padding: 0 6px;
+    border-radius: 4px;
+    background: var(--border);
+    color: var(--text);
+    font-weight: 700;
+}
+
 .board-back {
     font-size: 14px;
 }
