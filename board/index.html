@@ -3,25 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <!-- CSP は README「Content Security Policy」の現行の値に、次を足したもの（README の同じ節に理由）。
-     - connect-src の https://api.github.com（議題を開いたときに GitHub から読む）
-     - connect-src の https://board-api.hand-plus.com（匿名のフォームの送り先の Worker・handball-project#596）
+     - connect-src の https://api.github.com（Worker で読めなかったときに、議題を GitHub から直接読む）
+     - connect-src の https://board-api.hand-plus.com（議題を読む先と、匿名のフォームの送り先の Worker・handball-project#596・#622）
      - script-src と frame-src の https://challenges.cloudflare.com（匿名のフォームの Turnstile）
      本文は GitHub が HTML にしたものを board.js が差し込むので、このページは CSP を外さない。 -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com https://api.github.com https://board-api.hand-plus.com; frame-src https://www.youtube.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index,follow">
 <title>ハンドボール掲示板｜ハンドプラス</title>
-<meta name="description" content="ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す掲示板です。">
+<meta name="description" content="ハンドボールの困りごとや聞いてみたいこと、何でも書ける掲示板です。運営がアプリやツールで解決していきます。">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:url" content="https://hand-plus.com/board/">
 <meta property="og:title" content="ハンドボール掲示板">
-<meta property="og:description" content="ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す掲示板です。">
+<meta property="og:description" content="ハンドボールの困りごとや聞いてみたいこと、何でも書ける掲示板です。運営がアプリやツールで解決していきます。">
 <!-- OG は**このページ専用**（README「OG 画像の更新手順」の 1 枚 = 1 ページ）。
      生成元: og-source/index.html → scripts/generate-og.sh board/og-source/index.html board/images/og.jpg -->
 <meta property="og:image" content="https://hand-plus.com/board/images/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" href="https://hand-plus.com/board/">
+<!-- canonical はここに書かず、board.js が入れる（議題ごとに ?n=<番号> の URL にする。handball-project#622）。
+     書いた canonical を JS で書き換えるのを Google は勧めておらず、HTML に無いときだけ JS で入れる形を勧めている。
+     議題が見つからない・読めないときは、board.js が下の robots を noindex に変える。 -->
 <link rel="icon" type="image/png" sizes="32x32" href="../images/icon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="../images/icon-180.png">
 <link rel="stylesheet" href="../style.css">
@@ -35,14 +37,17 @@
 </header>
 <main>
     <h1>ハンドボール掲示板</h1>
-    <p class="board-lead">ハンドボールで困っていることや、「こうなったら良いのに」と思うことを持ち寄って話す場所です。</p>
+    <p class="board-lead">ハンドボールの困りごとや聞いてみたいこと、何でも書ける場所です。運営がアプリやツールで解決していきます。</p>
 
     <!-- 並びは「議題の一覧 → 匿名投稿 → GitHub → 解決済み」（handball-project#605・#618）。読みに来た人がまず議題を見て、
          何を書く場所かを議題から知る。書く入口は、入りやすい匿名を GitHub より先に置く。
          解決済みは「こうやって解決された」例で、未解決の一覧に混ぜると未解決が埋もれるので一番下に置く。 -->
 
-    <!-- 議題の一覧と、?n=<番号> のときはその議題の会話を board.js がここに描く。 -->
+    <!-- 議題の一覧と、?n=<番号> のときはその議題の会話を board.js がここに描く。
+         議題は data-board-read（Worker）から読み、読めなければ GitHub の API から直接読む（handball-project#622）。
+         data-board-url は canonical の元（このページの URL）。 -->
     <section class="board" id="board" data-board-repo="kinjo-ryura/hand-plus.com" data-board-label="議題"
+             data-board-url="https://hand-plus.com/board/" data-board-read="https://board-api.hand-plus.com"
              data-board-post="https://board-api.hand-plus.com" data-board-sitekey="0x4AAAAAAFYX9RYEmiM8y5DZ" aria-live="polite">
         <noscript><p>議題は <a href="https://github.com/kinjo-ryura/hand-plus.com/issues?q=is%3Aissue%20is%3Aopen%20label%3A%E8%AD%B0%E9%A1%8C">GitHub</a> で読めます。</p></noscript>
     </section>

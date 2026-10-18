@@ -3,8 +3,14 @@
 //
 // - **議題を HTML に書き出さない。** 書き出すと、議題や返信が増えるたびにサイトの更新が要る。
 //   開いたときに読めば、GitHub で書かれたものが次に開いた時点で載る
-// - **ログインなしの API は IP ごとに 1 時間 60 回まで。** 一覧は 1 回、議題は 2 回（本文と返信）。
-//   超えたとき・読めないときは GitHub の一覧へ案内する
+// - **議題は Worker（data-board-read）から読み、読めなければ GitHub の API から直接読む**（handball-project#622）。
+//   Google がページを描くとき、GitHub の API からは読めず（2026-10-18 のリッチリザルト テスト）、議題が検索に載らなかった。
+//   Worker は App の token で読んで 60 秒ためる。返事は GitHub のものそのままなので、どちらから読んでも同じ部品で描く。
+//   直接読むときは、ログインなしの API は IP ごとに 1 時間 60 回まで（一覧は 1 回、議題は 2 回〈本文と返信〉）。
+//   どちらでも読めないときは GitHub の一覧へ案内する
+// - **検索に載せる形**（handball-project#622）: canonical は HTML に書かず、ここで議題ごとの URL（?n=<番号>）を入れる。
+//   議題の題と本文の頭を、ページの題と説明にする。議題が見つからない・読めないときは、そのページを noindex にする
+//   （中身の無いページが議題の URL で検索に載らないように）
 // - **本文は GitHub が HTML にしたもの（`body_html`）を受け取る。** Markdown をここで描かない。
 //   差し込む前に、使う要素と属性だけを残す（GitHub が既に無害化しているが、ページに入れる側でも絞る）
 // - **閉じた議題は、「解決した」で閉じたものだけを解決済みとして出す**（handball-project#618）。一覧では書く入口の
@@ -30,12 +36,17 @@
 
     const REPO = root.dataset.boardRepo;
     const LABEL = root.dataset.boardLabel;
+    const BOARD_URL = root.dataset.boardUrl;
+    const READ_BASE = root.dataset.boardRead;
     const API = `https://api.github.com/repos/${REPO}`;
     const HTML_JSON = "application/vnd.github.html+json";
     const LIST_ON_GITHUB = `https://github.com/${REPO}/issues?q=${encodeURIComponent(`is:issue is:open label:${LABEL}`)}`;
     // Issue form は本文の頭に「### <欄の label>」を入れる。.github/ISSUE_TEMPLATE/board.yml の label と揃える
     const FORM_HEADING = "本文";
+    // Worker の LIST_PER_PAGE と揃える（Worker のテストが見る）
     const PER_PAGE = 100;
+    // 議題のページの説明（検索結果の題の下に出る文）にする本文の頭の文字数
+    const DESCRIPTION_MAX = 120;
 
     // 匿名の入口。上限と注記は Worker と揃える（Worker のテストが見る）
     const POST_BASE = root.dataset.boardPost;
@@ -45,7 +56,7 @@
     const NOTE = "ハンドボール掲示板のフォームから、名前を出さずに届いた投稿です。";
     const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
     // .github/ISSUE_TEMPLATE/board.yml の placeholder と同じ（GitHub の起票フォームと匿名のフォームを揃える）
-    const BODY_PLACEHOLDER = "何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です。";
+    const BODY_PLACEHOLDER = "何に困っているか、何を聞きたいか、どうなったら良いか。思いついたままで大丈夫です。";
 
     // ── 小さな部品 ──────────────────────────────────────────────
 
@@ -78,10 +89,49 @@
         }
     }
 
+    // Worker は path の頼み方（query）を見ず、自分で決めた同じ頼み方で読む。Worker が 404 を返したとき（直前に
+    // 載った議題がまだ Worker の一覧に無いなど）も GitHub に聞き直す
     async function get(path) {
+        if (READ_BASE) {
+            try {
+                const res = await fetch(READ_BASE + path);
+                if (res.ok) return await res.json();
+            } catch {
+                // 下で GitHub から直接読む
+            }
+        }
         const res = await fetch(API + path, { headers: { Accept: HTML_JSON } });
         if (!res.ok) throw new ApiError(res.status);
         return res.json();
+    }
+
+    // ── 検索に載せる形 ──────────────────────────────────────────
+
+    // HTML に canonical は無い（あると、書き換えたときに Google が迷う）。無ければ足し、あれば向け直す
+    // （匿名の議題が載って議題のページへ移ったとき）
+    function setCanonical(number) {
+        let link = document.head.querySelector('link[rel="canonical"]');
+        if (!link) {
+            link = el("link", { rel: "canonical" });
+            document.head.append(link);
+        }
+        link.setAttribute("href", number ? `${BOARD_URL}?n=${number}` : BOARD_URL);
+    }
+
+    function setMeta(name, content) {
+        let meta = document.head.querySelector(`meta[name="${name}"]`);
+        if (!meta) {
+            meta = el("meta", { name });
+            document.head.append(meta);
+        }
+        meta.setAttribute("content", content);
+    }
+
+    function describe(text) {
+        const flat = text.replace(/\s+/g, " ").trim();
+        if (!flat) return;
+        const chars = [...flat];
+        setMeta("description", chars.length > DESCRIPTION_MAX ? `${chars.slice(0, DESCRIPTION_MAX).join("")}…` : flat);
     }
 
     // 「解決した」で閉じた議題（handball-project#618）。「対応しない」など他の理由で閉じたものは出さない。
@@ -338,6 +388,7 @@
             if (!(e instanceof ApiError && NOT_FOUND.has(e.status))) throw e;
         }
         if (!issue || !isBoardIssue(issue)) {
+            setMeta("robots", "noindex");
             root.replaceChildren(backLink(), el("p", { class: "board-status" }, "この議題は見つかりませんでした。"));
             return;
         }
@@ -357,12 +408,15 @@
     // notice は一番上に出す一言（議題が載った直後の「載りました。」）
     function renderIssue(issue, comments, notice) {
         document.title = `${issue.title}｜ハンドボール掲示板`;
+        setCanonical(issue.number);
+        const topic = post(issue, issue.title);
+        describe(topic.querySelector(".board-body").textContent);
         let count = issue.comments;
         const heading = el("h3", { class: "board-replies-heading" }, `返信 ${count} 件`);
         const replies = el("ol", { class: "board-replies" }, ...comments.map((c) => el("li", {}, post(c))));
         const parts = [backLink()];
         if (notice) parts.push(el("p", { class: "board-status" }, notice));
-        parts.push(post(issue, issue.title), heading);
+        parts.push(topic, heading);
         if (comments.length > 0) parts.push(replies);
         const more = issue.comments > comments.length;
         if (more) {
@@ -397,6 +451,8 @@
 
     const number = Number(new URLSearchParams(location.search).get("n"));
     const viewingIssue = Number.isInteger(number) && number > 0;
+    // 読み込む前に入れる（読めなかったときも、議題のページは自分の URL を名乗る）
+    setCanonical(viewingIssue ? number : null);
     const anon = document.querySelector("[data-board-anon]");
     if (anon && anonEnabled() && !viewingIssue) {
         anon.append(anonForm("topic", null, openTopic));
@@ -405,5 +461,9 @@
     // openTopic が履歴に足した議題のページから戻ったとき、描き直す代わりに開き直す
     window.addEventListener("popstate", () => location.reload());
     const run = viewingIssue ? showIssue(number) : showList();
-    run.catch(showFailure);
+    run.catch(() => {
+        // 一覧のページには書く入口と説明があるので残す。議題のページは中身が無いので検索に載せない
+        if (viewingIssue) setMeta("robots", "noindex");
+        showFailure();
+    });
 })();
