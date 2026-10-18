@@ -45,7 +45,7 @@
     const NOTE = "ハンドボール掲示板のフォームから、名前を出さずに届いた投稿です。";
     const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
     // .github/ISSUE_TEMPLATE/board.yml の placeholder と同じ（GitHub の起票フォームと匿名のフォームを揃える）
-    const BODY_PLACEHOLDER = "何に困っているか、どんな場面か、どうなったら良いか。思いついたままで大丈夫です。";
+    const BODY_PLACEHOLDER = "何に困っているか、何を聞きたいか、どうなったら良いか。思いついたままで大丈夫です。";
 
     // ── 小さな部品 ──────────────────────────────────────────────
 
