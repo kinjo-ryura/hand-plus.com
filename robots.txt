@@ -3,3 +3,6 @@ User-agent: *
 Disallow:
 
 Sitemap: https://hand-plus.com/sitemap.xml
+# 掲示板の議題のページ（/board/?n=<番号>）の一覧。議題が増えるたびに上の sitemap を直すと人の merge が要るので、
+# 掲示板の Worker が議題から作る。別のホストの sitemap は、ここに書くことで hand-plus.com の URL を載せてよくなる
+Sitemap: https://board-api.hand-plus.com/sitemap.xml
