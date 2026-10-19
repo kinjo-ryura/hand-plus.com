@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OSS ライセンス｜ハンド記録</title>
-<meta name="description" content="ハンド記録の集計コア（handball-toolkit）とこのサイトの試合データデモ（WebAssembly）に含まれるオープンソースソフトウェアのライセンス表示。">
+<meta name="description" content="ハンド記録（iOS アプリ・Android 版・このサイトの試合データデモ）に含まれるオープンソースソフトウェアと学習済みモデルのライセンス表示。">
 <link rel="canonical" href="https://hand-plus.com/handball-recorder/licenses/">
 <link rel="icon" type="image/png" sizes="32x32" href="../../images/icon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="../../images/icon-180.png">
@@ -22,15 +22,34 @@
 </header>
 <!-- 手書きのページ。一覧の写しをここに持たない — 写しは toolkit のリリースのたびに古くなる
      （handball-project#384）。一覧の実体は handball-toolkit の THIRD_PARTY_LICENSES.md（main）で、
-     toolkit が Cargo.lock から生成し、toolkit の CI が鮮度を検査する。 -->
+     toolkit が Cargo.lock から生成し、toolkit の CI が鮮度を検査する。
+     iOS アプリの設定タブの「オープンソースライセンス」と、Android 版の一覧画面の ⋮ →「OSS ライセンス」は
+     このページを開く（handball-project#650・#654）。MPL-2.0 §3.2 と GPL の「ソースの入手方法を知らせる」は
+     このページが担うので、URL を変えない。
+     Android 版のアプリ側の依存はライセンスの種類だけを書く。ライブラリごとの一覧は APK がビルドのたびに
+     POM から起こして同梱しており、知らない種類のライセンスが混ざるとビルドが止まる（そのときにここも直す）。 -->
 <main>
     <h1>OSS ライセンス</h1>
-    <p class="meta">対象: ハンド記録の集計コア handball-toolkit を含む配布物 — iOS アプリ／Android 版／このサイトの試合データデモ（WebAssembly）</p>
+    <p class="meta">対象: ハンド記録の iOS アプリ／Android 版／このサイトの試合データデモ（WebAssembly）</p>
 
+    <h2>集計コア（handball-toolkit）</h2>
     <p>ハンド記録の試合集計は、オープンソースの集計コア <a href="https://github.com/kinjo-ryura/handball-toolkit" target="_blank" rel="noopener noreferrer">handball-toolkit</a>（MIT ライセンス）で動いています。このサイトの<a href="../demo/">試合データデモ</a>と試合・ハイライトの各ページは、同じコアを WebAssembly としてブラウザに配信しています。</p>
     <p>コアに組み込まれているオープンソースソフトウェアの一覧（ライブラリ名・バージョン・入手先）と、著作権表示を含むライセンス本文は、次のページに掲げています。各ライブラリのソースコードは一覧の「入手先」から入手できます。</p>
     <p><a href="https://github.com/kinjo-ryura/handball-toolkit/blob/main/THIRD_PARTY_LICENSES.md" target="_blank" rel="noopener noreferrer">OSS ライセンス一覧（handball-toolkit の THIRD_PARTY_LICENSES.md）</a></p>
     <p class="meta">この一覧は iOS／Android／Web の配布物に含まれる依存を統合したもので、Web 版（WebAssembly）には含まれないライブラリも載っています。</p>
+
+    <h2>Android 版のアプリ側の依存</h2>
+    <p>Android 版は、集計コアのほかに次のオープンソースソフトウェアを含みます。</p>
+    <ul>
+        <li>AndroidX（Jetpack Compose・Room など）、Kotlin の標準ライブラリ、kotlinx-coroutines、<a href="https://github.com/java-native-access/jna" target="_blank" rel="noopener noreferrer">JNA</a> — <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">Apache License 2.0</a>。JNA は Apache License 2.0 と LGPL 2.1 のどちらかを選べ、Apache License 2.0 で受けています。</li>
+        <li><a href="https://github.com/google/desugar_jdk_libs" target="_blank" rel="noopener noreferrer">desugar_jdk_libs</a>（Android 7 で日付と時刻の処理を動かすための、OpenJDK の一部）— GNU General Public License version 2 with the Classpath Exception。ソースコードは <a href="https://github.com/google/desugar_jdk_libs" target="_blank" rel="noopener noreferrer">google/desugar_jdk_libs</a> から入手できます。</li>
+    </ul>
+
+    <h2>ゴール枠検出モデル（iOS アプリ）</h2>
+    <p>iOS アプリが端末内の動画を解析するときにゴール枠を見つけるモデルは、<a href="https://github.com/Peterande/D-FINE" target="_blank" rel="noopener noreferrer">D-FINE</a>（Yansong Peng, Hebei Li, Peixi Wu, Yueyi Zhang, Xiaoyan Sun, Feng Wu）の COCO 学習済みの重み <a href="https://huggingface.co/ustc-community/dfine-nano-coco" target="_blank" rel="noopener noreferrer">ustc-community/dfine-nano-coco</a> を元に、ハンドボールの試合映像でゴール枠を検出するよう追加学習し、Core ML へ変換したものです。元の重みは <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">Apache License 2.0</a> で配布されています。</p>
+
+    <h2>アプリに同梱しているもの</h2>
+    <p>iOS アプリと Android 版には、そのアプリに組み込んだ版の著作権表示とライセンス本文を同梱しています。Android 版は v0.3 から、アプリ側の依存についても、ライブラリごとの一覧（名前・版・ライセンス）と本文を同梱しています。上の一覧は最新の版のもので、古いアプリに含まれるライブラリの版とは異なることがあります。過去の版のソースコードも、一覧の「入手先」（crates.io）から入手できます。</p>
 </main>
 <footer class="site">
     <p>
