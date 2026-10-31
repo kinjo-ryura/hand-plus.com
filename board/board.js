@@ -28,6 +28,9 @@
 // - **リポの持ち主（author_association が OWNER）の投稿は、書いた人を「運営」と出す**（handball-project#615）。
 //   読む人にはアカウント名では誰か分からない。返信が並んでも見つけやすいよう、印（board-owner）で囲む。
 //   github.com ではアカウント名のまま
+// - **議題を共有するリンクは、このページの URL ではなく Worker の名前（data-board-share）にする**（handball-project#715）。
+//   X などのカードは URL を開いたときに返る HTML の頭から作られ、GitHub Pages は ?n=<番号> を見ないので、このページの URL では
+//   どの議題も掲示板の共通のカードになる。共有のリンクは Worker が議題の題をカードに入れて返し、人はこのページへ移る
 (() => {
     "use strict";
 
@@ -38,6 +41,8 @@
     const LABEL = root.dataset.boardLabel;
     const BOARD_URL = root.dataset.boardUrl;
     const READ_BASE = root.dataset.boardRead;
+    // 議題を共有するリンクの頭（<SHARE_BASE><番号>）。Worker の SHARE_URL と揃える（Worker のテストが見る）
+    const SHARE_BASE = root.dataset.boardShare;
     const API = `https://api.github.com/repos/${REPO}`;
     const HTML_JSON = "application/vnd.github.html+json";
     const LIST_ON_GITHUB = `https://github.com/${REPO}/issues?q=${encodeURIComponent(`is:issue is:open label:${LABEL}`)}`;
@@ -367,6 +372,33 @@
             cleanBody(item.body_html, item.html_url));
     }
 
+    // 「この議題を共有」（handball-project#715）。スマホでは OS の共有の画面（X や LINE を選べる）を出し、PC ではリンクを
+    // コピーする（PC の共有の画面は、X や LINE を選べないことが多い）。コピーできないときはリンクを出して手で写せるようにする。
+    // 従の操作なので、ボタンの形にしない（handball-project#619）
+    function shareLink(issue) {
+        const url = `${SHARE_BASE}${issue.number}`;
+        const status = el("span", { class: "board-share-status", "aria-live": "polite" });
+        const button = el("button", { type: "button", class: "board-share-button" }, "この議題を共有");
+        button.addEventListener("click", async () => {
+            if (navigator.share && matchMedia("(pointer: coarse)").matches) {
+                try {
+                    await navigator.share({ title: issue.title, url });
+                    return;
+                } catch (e) {
+                    // 共有の画面を閉じただけなら何もしない。開けなかったときはコピーに回る
+                    if (e.name === "AbortError") return;
+                }
+            }
+            try {
+                await navigator.clipboard.writeText(url);
+                status.textContent = "リンクをコピーしました。";
+            } catch {
+                status.textContent = url;
+            }
+        });
+        return el("p", { class: "board-share" }, button, " ", status);
+    }
+
     function backLink() {
         return el("p", { class: "board-back" }, el("a", { href: "./" }, "← 議題の一覧"));
     }
@@ -416,7 +448,9 @@
         const replies = el("ol", { class: "board-replies" }, ...comments.map((c) => el("li", {}, post(c))));
         const parts = [backLink()];
         if (notice) parts.push(el("p", { class: "board-status" }, notice));
-        parts.push(topic, heading);
+        parts.push(topic);
+        if (SHARE_BASE) parts.push(shareLink(issue));
+        parts.push(heading);
         if (comments.length > 0) parts.push(replies);
         const more = issue.comments > comments.length;
         if (more) {

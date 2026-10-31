@@ -45,9 +45,11 @@
 
     <!-- 議題の一覧と、?n=<番号> のときはその議題の会話を board.js がここに描く。
          議題は data-board-read（Worker）から読み、読めなければ GitHub の API から直接読む（handball-project#622）。
-         data-board-url は canonical の元（このページの URL）。 -->
+         data-board-url は canonical の元（このページの URL）。data-board-share は議題を共有するリンクの頭
+         （Worker が議題の題をカードに入れて返す。このページの URL ではどの議題も共通のカードになる・handball-project#715）。 -->
     <section class="board" id="board" data-board-repo="kinjo-ryura/hand-plus.com" data-board-label="議題"
              data-board-url="https://hand-plus.com/board/" data-board-read="https://board-api.hand-plus.com"
+             data-board-share="https://board.hand-plus.com/"
              data-board-post="https://board-api.hand-plus.com" data-board-sitekey="0x4AAAAAAFYX9RYEmiM8y5DZ" aria-live="polite">
         <noscript><p>議題は <a href="https://github.com/kinjo-ryura/hand-plus.com/issues?q=is%3Aissue%20is%3Aopen%20label%3A%E8%AD%B0%E9%A1%8C">GitHub</a> で読めます。</p></noscript>
     </section>

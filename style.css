@@ -808,6 +808,28 @@ a.board-link {
     font-weight: 700;
 }
 
+/* 議題のページの「この議題を共有」（handball-project#715）。従の操作なので、推しのページの .finder-link と同じく
+   リンクの見た目にする。押した後の「リンクをコピーしました。」は横に薄く出す。 */
+.board-share {
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.board-share-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--link);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.board-share-status {
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+
 /* 匿名のフォーム（handball-project#596）。書く入口でボタンの形をしているのは送るボタンだけ（#619）。 */
 button.board-button {
     padding: 10px 22px;
