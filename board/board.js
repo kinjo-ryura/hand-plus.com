@@ -383,13 +383,31 @@
             cleanBody(item.body_html, item.html_url));
     }
 
-    // 「この議題を共有」（handball-project#715）。スマホでは OS の共有の画面（X や LINE を選べる）を出し、PC ではリンクを
-    // コピーする（PC の共有の画面は、X や LINE を選べないことが多い）。コピーできないときはリンクを出して手で写せるようにする。
-    // 従の操作なので、ボタンの形にしない（handball-project#619）
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const SHARE_ICON = ["M12 3v12", "M7.5 7.5 12 3l4.5 4.5",
+        "M8.5 10H6.5a1.5 1.5 0 0 0-1.5 1.5v8A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5h-2"];
+    const COPIED_ICON = ["M5 12.5 10 17.5 19 7"];
+
+    function icon(paths) {
+        const svg = document.createElementNS(SVG_NS, "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("aria-hidden", "true");
+        for (const d of paths) {
+            const path = document.createElementNS(SVG_NS, "path");
+            path.setAttribute("d", d);
+            svg.append(path);
+        }
+        return svg;
+    }
+
+    // 「共有」（handball-project#715・#720）。スマホでは OS の共有の画面（X や LINE を選べる）を出し、PC ではリンクを
+    // コピーする（PC の共有の画面は、X や LINE を選べないことが多い）。コピーできないときはリンクを出して手で写せるようにする
     function shareLink(issue) {
         const url = `${SHARE_BASE}${issue.number}`;
-        const status = el("span", { class: "board-share-status", "aria-live": "polite" });
-        const button = el("button", { type: "button", class: "board-share-button" }, "この議題を共有");
+        const label = el("span", { "aria-live": "polite" }, "共有");
+        const button = el("button", { type: "button", class: "board-share-button", title: "この議題を共有" }, icon(SHARE_ICON), label);
+        const fallback = el("p", { class: "board-share-fallback", hidden: "" });
+        let timer;
         button.addEventListener("click", async () => {
             if (navigator.share && matchMedia("(pointer: coarse)").matches) {
                 try {
@@ -402,12 +420,19 @@
             }
             try {
                 await navigator.clipboard.writeText(url);
-                status.textContent = "リンクをコピーしました。";
+                button.firstChild.replaceWith(icon(COPIED_ICON));
+                label.textContent = "コピーしました";
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    button.firstChild.replaceWith(icon(SHARE_ICON));
+                    label.textContent = "共有";
+                }, 2000);
             } catch {
-                status.textContent = url;
+                fallback.textContent = url;
+                fallback.hidden = false;
             }
         });
-        return el("p", { class: "board-share" }, button, " ", status);
+        return { button, fallback };
     }
 
     function backLink() {
@@ -488,11 +513,15 @@
         let count = issue.comments;
         const heading = el("h3", { class: "board-replies-heading" }, `返信 ${count} 件`);
         const replies = el("ol", { class: "board-replies" }, ...comments.map((c) => el("li", {}, post(c))));
-        const parts = [backLink()];
+        const parts = [];
+        if (SHARE_BASE) {
+            const share = shareLink(issue);
+            parts.push(el("div", { class: "board-nav" }, backLink(), share.button), share.fallback);
+        } else {
+            parts.push(backLink());
+        }
         if (notice) parts.push(el("p", { class: "board-status" }, notice));
-        parts.push(topic);
-        if (SHARE_BASE) parts.push(shareLink(issue));
-        parts.push(heading);
+        parts.push(topic, heading);
         if (comments.length > 0) parts.push(replies);
         const more = issue.comments > comments.length;
         if (more) {
