@@ -58,14 +58,16 @@
     <div class="board-write" data-board-write>
         <!-- アカウントの無い人の入口。フォームは board.js が足す（data-board-post と data-board-sitekey が
              そろうまでは隠したまま。sitekey は Turnstile の widget の値で、ページに埋まる前提のもの・秘密ではない）。 -->
-        <div class="board-anon" data-board-anon hidden>
+        <!-- id="post" は、解決済みの議題のページの「この議題に関係ない 困りごとを投稿する →」の行き先（handball-project#618）。 -->
+        <div class="board-anon" id="post" data-board-anon hidden>
             <h2>匿名投稿</h2>
         </div>
 
         <!-- アカウントのある人の入口。見出しは「匿名投稿」と対にする（handball-project#606）。「記名」は聞き慣れず、
              「名前を出して」は本名と取られるので、GitHub で出るのがアカウント名であることに合わせた。
              入口はボタンにせず文字のリンクにする（handball-project#619）。主な入口は匿名投稿なので、書く入口で
-             ボタンの形をしているのは匿名の「送る」だけにする。↗ は、押すとサイトの外（github.com）へ移る印。 -->
+             ボタンの形をしているのは匿名のフォームの「投稿する」「返信する」だけにする（handball-project#618）。
+             ↗ は、押すとサイトの外（github.com）へ移る印。 -->
         <div class="board-github">
             <h2>ニックネーム付きで投稿</h2>
             <p class="board-cta"><a class="board-link" href="https://github.com/kinjo-ryura/hand-plus.com/issues/new?template=board.yml">GitHub にログインして投稿 <span aria-hidden="true">↗</span></a></p>

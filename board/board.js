@@ -166,6 +166,7 @@
     ]);
     const DROP = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "FORM", "INPUT", "BUTTON", "TEXTAREA",
         "SELECT", "LINK", "META", "SVG", "MATH", "VIDEO", "AUDIO", "SOURCE", "TEMPLATE"]);
+    const TOPIC_LINK = new RegExp(`^https://github\\.com/${REPO.replaceAll(".", "\\.")}/issues/(\\d+)$`);
 
     function cleanBody(html, linkToGitHub) {
         // DOMParser の文書は描画されないので、ここで script も画像の読み込みも走らない
@@ -193,7 +194,12 @@
                 const href = tag === "A" ? node.getAttribute("href") : null;
                 for (const attr of [...node.attributes]) node.removeAttribute(attr.name);
                 if (tag === "A") {
-                    if (href && /^https?:\/\//.test(href)) {
+                    // 掲示板の議題へのリンク（続きの議題の頭の「#<番号>」など・handball-project#618）は、github.com ではなく
+                    // その議題のページへ向ける。読む人の多くは GitHub のアカウントを持たない
+                    const topic = href?.match(TOPIC_LINK);
+                    if (topic) {
+                        node.setAttribute("href", `?n=${topic[1]}`);
+                    } else if (href && /^https?:\/\//.test(href)) {
                         node.setAttribute("href", href);
                         node.setAttribute("rel", "nofollow noopener noreferrer");
                     }
@@ -251,18 +257,22 @@
     }
 
     // kind = "topic"（議題）| "reply"（返信。issueNumber の議題へ）。
-    // onPublished(item) は載ったものをその場で出す。null なら resultMessage の開くリンクを出す
-    function anonForm(kind, issueNumber, onPublished) {
+    // onPublished(item) は載ったものをその場で出す。null なら resultMessage の開くリンクを出す。
+    // options.placeholder は本文の書き方の例、options.prefix は送るときに本文の頭へ足す行（続きの議題・handball-project#618）
+    function anonForm(kind, issueNumber, onPublished, options = {}) {
         const fields = [];
         let title = null;
         if (kind === "topic") {
             title = el("input", { type: "text", name: "title", maxlength: String(TITLE_MAX), required: "" });
             fields.push(el("label", { class: "board-field" }, el("span", {}, "タイトル"), title));
         }
-        const body = el("textarea", { name: "body", rows: "6", maxlength: String(BODY_MAX), required: "", placeholder: BODY_PLACEHOLDER });
+        // 頭へ足す行のぶん、書ける字数を減らす（Worker は足した後の本文で上限を見る）
+        const room = BODY_MAX - (options.prefix ? [...options.prefix].length + 2 : 0);
+        const body = el("textarea", { name: "body", rows: "6", maxlength: String(room), required: "",
+            placeholder: options.placeholder ?? BODY_PLACEHOLDER });
         fields.push(el("label", { class: "board-field" }, el("span", {}, "本文"), body));
         const check = el("div", { class: "board-turnstile" });
-        const button = el("button", { type: "submit", class: "board-button" }, "送る");
+        const button = el("button", { type: "submit", class: "board-button" }, kind === "topic" ? "投稿する" : "返信する");
         const status = el("p", { class: "board-status", "aria-live": "polite" });
         const form = el("form", { class: "board-form" }, ...fields, check, el("p", { class: "board-cta" }, button), status);
 
@@ -283,9 +293,10 @@
             }
             button.disabled = true;
             // Worker は判定と公開を済ませてから返すので数秒かかる。止まっていないと分かるよう、回る印を添える
-            status.replaceChildren(el("span", { class: "board-spinner", "aria-hidden": "true" }), "送っています…");
+            status.replaceChildren(el("span", { class: "board-spinner", "aria-hidden": "true" }), kind === "topic" ? "投稿しています…" : "返信しています…");
+            const text = options.prefix ? `${options.prefix}\n\n${body.value}` : body.value;
             const payload = kind === "topic"
-                ? { title: title.value, body: body.value, turnstileToken: token }
+                ? { title: title.value, body: text, turnstileToken: token }
                 : { issue: issueNumber, body: body.value, turnstileToken: token };
             try {
                 const res = await fetch(`${POST_BASE}/${kind === "topic" ? "topics" : "replies"}`, {
@@ -403,6 +414,37 @@
         return el("p", { class: "board-back" }, el("a", { href: "./" }, "← 議題の一覧"));
     }
 
+    // 解決済みの議題の続き（handball-project#618）。解決した後に出てきた「まだ困っていること」は、閉じた議題を開け直さず
+    // 続きの議題として立ててもらう（解決済みへの返信は一覧の一番下に沈み、他の人の目に入りにくい）。感想や報告は返信へ。
+    // 「この議題に関係する / 関係ない」を対にして並べ、「続き」が何を書く所かを対比で伝える。押せるのは「困りごとを投稿する」
+    // だけで、違いは地の文で読ませる。
+    // - **関係する方はその場で開く**（折りたたみ）。書いている間も元の議題が見える。立った議題の本文の頭には元の議題を書く 1 行が入り、
+    //   GitHub が元の議題の履歴に載せる。GitHub の入口は置かない（すぐ下の「GitHub にログインして返信 ↗」と重なる）
+    // - **関係ない方は一覧の匿名投稿へ移る**（→）。このページの話ではないので、このページで書かせない
+    const CONTINUE_PLACEHOLDER = "例: ○○は解決したけど、△△がまだ困っている。";
+
+    function continueBox(issue) {
+        // 番号はリポの名前付きで書く。「#<番号>」だけだと、GitHub は本文が置かれたリポの番号として読む。
+        // 掲示板のリポの中では GitHub が「#<番号>」と出し、元の議題の履歴に載せる
+        const prefix = `「${issue.title}」（${REPO}#${issue.number}）の続きです。`;
+        // 開く方はリンクの見た目にしない（押すと移ると読まれる）。枠で囲んだ折りたたみ（details）にし、右の山形で開くと見せる
+        const details = el("details", { class: "board-continue-details" },
+            el("summary", {}, "この議題に関係する困りごとを投稿する"));
+        details.addEventListener("toggle", () => {
+            // フォーム（と Turnstile）は初めて開いたときに作る
+            if (!details.open || details.querySelector("form")) return;
+            details.append(el("p", { class: "board-continue-of" }, `「${issue.title}」の続き`),
+                anonForm("topic", null, openTopic, { prefix, placeholder: CONTINUE_PLACEHOLDER }));
+        });
+
+        // 見出しは置かない（2 行とも「困りごとを投稿する」と言っており、見出しが言い直しになる）
+        return el("div", { class: "board-continue" },
+            el("ul", { class: "board-continue-links" },
+                el("li", {}, details),
+                el("li", {}, "この議題に関係ない ",
+                    el("a", { class: "board-link", href: "./#post" }, "困りごとを投稿する ", el("span", { "aria-hidden": "true" }, "→")))));
+    }
+
     // 議題を開いているときは、一覧の側の書く入口を隠す（書く入口は一覧の側にだけ置く）
     function hideListWrite() {
         const write = document.querySelector("[data-board-write]");
@@ -475,6 +517,8 @@
             reply.append(el("div", { class: "board-anon" }, el("h3", {}, "匿名で返信する"),
                 anonForm("reply", issue.number, more ? null : addReply)));
         }
+        // 続きの入口は解決済みの議題にだけ置き、匿名の返信と GitHub の返信の間に入れる（handball-project#618）
+        if (anonEnabled() && isSolved(issue)) reply.append(continueBox(issue));
         reply.append(el("div", { class: "board-github" },
             el("h3", {}, "ニックネーム付きで返信する"),
             el("p", { class: "board-cta" }, el("a", { class: "board-link", href: issue.html_url },
@@ -499,5 +543,9 @@
         // 一覧のページには書く入口と説明があるので残す。議題のページは中身が無いので検索に載せない
         if (viewingIssue) setMeta("robots", "noindex");
         showFailure();
+    }).finally(() => {
+        // #post（解決済みの議題から「関係ない 困りごとを投稿する →」で来た）は、フォームが隠れていて一覧も後から
+        // 入るので、ブラウザの飛び先が合わない。一覧が入った後に匿名投稿へ移し直す（handball-project#618）
+        if (!viewingIssue && location.hash === "#post" && anon && !anon.hidden) anon.scrollIntoView();
     });
 })();

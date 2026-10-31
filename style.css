@@ -802,7 +802,8 @@ footer.site p {
 
 /* GitHub の入口（「GitHub にログインして投稿 ↗」・返信の欄の「GitHub にログインして返信 ↗」）。以前は「送る」と同じ
    ボタンで、同じ強さに見えていた。GitHub のアカウントを持つ人は少なく、主な入口は匿名投稿なので、文字のリンクにして
-   書く入口でボタンの形をしているのを「送る」だけにする（handball-project#619）。推しのページの .finder-link と同じ
+   書く入口でボタンの形をしているのを匿名のフォームのボタン（「投稿する」「返信する」・#618 までは「送る」）だけにする
+   （handball-project#619）。推しのページの .finder-link と同じ
    「従の操作はリンクの見た目」。太字にするのは、下の説明の文の中のリンク（登録の案内）と見分けるため。 */
 a.board-link {
     font-weight: 700;
@@ -830,7 +831,7 @@ a.board-link {
     overflow-wrap: anywhere;
 }
 
-/* 匿名のフォーム（handball-project#596）。書く入口でボタンの形をしているのは送るボタンだけ（#619）。 */
+/* 匿名のフォーム（handball-project#596）。書く入口でボタンの形をしているのは、このボタン（「投稿する」「返信する」）だけ（#619・#618）。 */
 button.board-button {
     padding: 10px 22px;
     border: 2px solid var(--brand);
@@ -857,7 +858,8 @@ button.board-button:disabled {
     margin-top: 16px;
 }
 
-.board-github > :last-child {
+.board-github > :last-child,
+.board-continue > :last-child {
     margin-bottom: 0;
 }
 
@@ -980,6 +982,80 @@ button.board-button:disabled {
     background: var(--border);
     color: var(--text);
     font-weight: 700;
+}
+
+/* 解決済みの議題の続き（handball-project#618）。匿名の返信と GitHub の返信の間に、書く入口と同じ箱で置く。
+   書く入口でボタンの形をしているのは「投稿する」「返信する」だけにしておく（#619）。 */
+.board-continue {
+    margin: 16px 0;
+    padding: 16px 20px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+}
+
+.board-continue-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.board-continue-links li + li {
+    margin-top: 12px;
+}
+
+.board-continue-of {
+    margin: 12px 0 0;
+    font-weight: 700;
+}
+
+/* 関係する方はその場で開くので、リンク（押すと移る）の色にしない。枠で囲んだ行の右に下向きの山形を置き、開くと上を向く
+   （開く欄の見た目）。「投稿する」の琥珀の丸いボタンとは、枠の色と角で見分ける。 */
+.board-continue-details summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.board-continue-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.board-continue-details summary::after {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.15s;
+}
+
+.board-continue-details[open] summary::after {
+    transform: translateY(2px) rotate(-135deg);
+}
+
+.board-continue-details summary:hover {
+    border-color: var(--muted);
+}
+
+.board-continue-details[open] {
+    margin-bottom: 16px;
+}
+
+/* 上の transition より後に置く（前に置くと、同じ強さの上の規則に負ける） */
+@media (prefers-reduced-motion: reduce) {
+    .board-continue-details summary::after {
+        transition: none;
+    }
 }
 
 .board-back {
