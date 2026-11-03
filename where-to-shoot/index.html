@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com; frame-src https://www.youtube.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index,follow">
+<title>ゴールが広く見えるのはどこ？｜ハンドプラス</title>
+<meta name="description" content="打つ場所を動かすとゴールの見え方が変わります。ハンドボールで攻める側と守る側が何を狙っているかが分かる見方を 1 つ。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://hand-plus.com/where-to-shoot/">
+<meta property="og:title" content="ゴールが広く見えるのはどこ？">
+<meta property="og:description" content="打つ場所を動かすとゴールの見え方が変わります。ハンドボールで攻める側と守る側が何を狙っているかが分かる見方を 1 つ。">
+<meta property="og:image" content="https://hand-plus.com/where-to-shoot/images/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://hand-plus.com/where-to-shoot/">
+<link rel="icon" type="image/png" sizes="32x32" href="../images/icon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../images/icon-180.png">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="wts-page">
+<header class="site">
+    <div class="inner">
+        <a href="../"><img class="header-icon" src="../images/icon-32.png" alt="" width="24" height="24"><span class="wordmark">h++</span></a>
+    </div>
+</header>
+<main>
+    <p class="wts-lead">ハンドボール掲示板の議題<a href="../board/?n=26">「ルールを知らなくても、試合を楽しめる？」</a>への答えとして、攻撃と守備の駆け引きをひとつ紹介します。</p>
+    <h1><span class="wts-nowrap">ゴールが広く見えるのは</span><span class="wts-nowrap">どこ？</span></h1>
+
+    <section class="wts-figure">
+        <svg id="gvView" viewBox="0 0 600 300" role="img" aria-label="シューターの目線で見たゴール"></svg>
+        <svg id="gvCourt" class="wts-below" viewBox="-10.5 -0.5 21 11" role="img" aria-label="コートを上から見た図。シューターを動かせます"></svg>
+        <p class="wts-source">決定率の出典: IHF 男子世界選手権 2025</p>
+        <noscript><p>このページは JavaScript を使います。</p></noscript>
+    </section>
+    <p class="wts-answer">ゴールに近く、真ん中にいるほど広く見える。</p>
+
+    <h2>攻撃はシュート決定率が高い赤いゾーンを狙いたい</h2>
+
+    <section class="wts-figure">
+        <svg id="heatCourt" viewBox="-10.2 -1.7 20.4 12.2" role="img" aria-label="コートを上から見た図。シュートが決まりやすい場所ほど濃く塗ってある"></svg>
+    </section>
+
+    <h2>守備は赤いゾーンを固める</h2>
+
+    <section class="wts-figure">
+        <svg id="defCourt" viewBox="-10.2 -0.5 20.4 12.5" role="img" aria-label="コートを上から見た図。守る 6 人が赤いゾーンに並び、バックが 9 m 線の外からゴールを狙っている"></svg>
+    </section>
+    <p class="wts-answer">赤いゾーンに入れないので、まずはオレンジのゾーンからロングシュートを狙う。</p>
+
+    <h2>タップで選手を操作してみよう</h2>
+
+    <section class="wts-figure">
+        <svg id="sixCourt" viewBox="-10.5 -0.5 21 12.5" role="img" aria-label="コートを上から見た図。攻める 6 人と守る 6 人"></svg>
+    </section>
+
+    <h2>選手が何を狙っているか、想像しながら観戦してみよう</h2>
+    <p>攻撃は、ゴールに近い真ん中から決定率の高いシュートを打ちたい。逆に、守備はそこを守って決定率の低い場所からシュートを打たせたい。選手の気持ちを想像しながら、この駆け引きが見えるようになってくると、ルールを知らなくても試合が面白くなる。</p>
+</main>
+<footer class="site">
+    <p>X (<a href="https://x.com/handballballbal">@handballballbal</a>)</p>
+    <p>&copy; ハンドプラス</p>
+</footer>
+<script type="module" src="goal-view.js"></script>
+<script type="module" src="heat.js"></script>
+<script type="module" src="steps.js"></script>
+<script type="module" src="six.js"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4da6c2953fc94e4db1428548d7e8e1a6"}'></script>
+</body>
+</html>
