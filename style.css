@@ -241,6 +241,12 @@ footer.site {
     font-weight: normal;
 }
 
+.answer-pages h3 {
+    font-size: 1rem;
+    margin: 24px 0 0;
+    line-height: 1.4;
+}
+
 .hero {
     text-align: center;
     background: linear-gradient(180deg, var(--accent-soft) 0%, var(--bg) 100%);
