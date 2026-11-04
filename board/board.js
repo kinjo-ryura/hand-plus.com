@@ -158,7 +158,6 @@
 
     // ── 本文の HTML を絞る ──────────────────────────────────────
 
-    // 文の構造だけを残す。画像は CSP（img-src 'self'）で出ないので、GitHub で見る案内に置き換える
     const KEEP = new Set([
         "P", "BR", "HR", "A", "STRONG", "B", "EM", "I", "DEL", "S", "CODE", "PRE", "BLOCKQUOTE",
         "UL", "OL", "LI", "H1", "H2", "H3", "H4", "H5", "H6", "TABLE", "THEAD", "TBODY", "TR", "TH", "TD",
@@ -167,8 +166,10 @@
     const DROP = new Set(["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "FORM", "INPUT", "BUTTON", "TEXTAREA",
         "SELECT", "LINK", "META", "SVG", "MATH", "VIDEO", "AUDIO", "SOURCE", "TEMPLATE"]);
     const TOPIC_LINK = new RegExp(`^https://github\\.com/${REPO.replaceAll(".", "\\.")}/issues/(\\d+)$`);
+    const OWNER_IMAGE = "https://private-user-images.githubusercontent.com/";
+    const IMAGE_ATTRS = new Set(["src", "alt", "width", "height"]);
 
-    function cleanBody(html, linkToGitHub) {
+    function cleanBody(html, linkToGitHub, showImages) {
         // DOMParser の文書は描画されないので、ここで script も画像の読み込みも走らない
         const doc = new DOMParser().parseFromString(html || "", "text/html");
         const body = doc.body;
@@ -187,7 +188,13 @@
             if (DROP.has(tag)) {
                 node.remove();
             } else if (tag === "IMG") {
-                node.replaceWith(el("a", { href: linkToGitHub }, "［画像は GitHub で見られます］"));
+                if (showImages && node.getAttribute("src")?.startsWith(OWNER_IMAGE)) {
+                    for (const attr of [...node.attributes]) {
+                        if (!IMAGE_ATTRS.has(attr.name)) node.removeAttribute(attr.name);
+                    }
+                } else {
+                    node.replaceWith(el("a", { href: linkToGitHub }, "［画像は GitHub で見られます］"));
+                }
             } else if (!KEEP.has(tag)) {
                 node.replaceWith(...node.childNodes);
             } else {
@@ -380,7 +387,7 @@
             name === "運営" ? el("span", { class: "board-owner" }, name) : name, `・${formatDate(item.created_at)}`);
         if (title && isSolved(item)) meta.append(" ", el("span", { class: "board-solved-mark" }, "解決済み"));
         return el("article", { class: "board-post" }, ...(title ? [el("h2", {}, title)] : []), meta,
-            cleanBody(item.body_html, item.html_url));
+            cleanBody(item.body_html, item.html_url, name === "運営"));
     }
 
     const SVG_NS = "http://www.w3.org/2000/svg";

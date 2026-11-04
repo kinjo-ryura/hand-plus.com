@@ -2,12 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<!-- CSP は README「Content Security Policy」の現行の値に、次を足したもの（README の同じ節に理由）。
-     - connect-src の https://api.github.com（Worker で読めなかったときに、議題を GitHub から直接読む）
-     - connect-src の https://board-api.hand-plus.com（議題を読む先と、匿名のフォームの送り先の Worker・handball-project#596・#622）
-     - script-src と frame-src の https://challenges.cloudflare.com（匿名のフォームの Turnstile）
+<!-- CSP は README「Content Security Policy」の現行の値に、掲示板の分を足したもの（README の同じ節に一覧と理由）。
      本文は GitHub が HTML にしたものを board.js が差し込むので、このページは CSP を外さない。 -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com https://api.github.com https://board-api.hand-plus.com; frame-src https://www.youtube.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com https://www.youtube.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://private-user-images.githubusercontent.com; connect-src 'self' https://cloudflareinsights.com https://raw.githubusercontent.com https://api.github.com https://board-api.hand-plus.com; frame-src https://www.youtube.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index,follow">
 <title>ハンドボール掲示板｜ハンドプラス</title>

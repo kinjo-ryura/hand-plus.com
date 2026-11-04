@@ -1122,6 +1122,11 @@ button.board-button:disabled {
     font-size: 14px;
 }
 
+.board-body img {
+    max-width: 100%;
+    height: auto;
+}
+
 .board-body blockquote {
     margin: 8px 0;
     padding-left: 12px;
