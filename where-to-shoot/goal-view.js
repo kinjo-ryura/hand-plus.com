@@ -257,6 +257,6 @@ function drawView(svg, x, y) {
 }
 
 const viewSvg = document.getElementById('gvView');
-makeCourt(document.getElementById('gvCourt'), (x, y) => drawView(viewSvg, x, y), [LOOP[0][0], LOOP[0][1]]);
+if (viewSvg) makeCourt(document.getElementById('gvCourt'), (x, y) => drawView(viewSvg, x, y), [LOOP[0][0], LOOP[0][1]]);
 
 export { el, drawCourt, zoneOf, RATE };
